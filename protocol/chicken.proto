@@ -1,0 +1,52 @@
+package msg;
+
+//进入比赛
+message C2GW_JoinGame
+{
+}
+
+//房间成员信息
+message RoomMemberInfo
+{
+    optional int64 uid  = 1;                    //玩家id
+    optional int32 name = 2;                    //玩家名字
+    optional int32 answer = 3;                  //玩家答案
+}
+
+//服务器返回房间信息 (定时)
+message GW2C_UpdateRoomInfo
+{
+    repeated RoomMemberInfo members = 1;        //成员信息
+    optional int32 sumreward = 2;               //总奖池
+}
+
+//开始游戏 服务器通知游戏开始
+message GW2C_StartGame
+{
+}
+
+//发送问题
+message GW2C_QuestionInfo
+{
+    optional string txt = 1;            //问题
+    optional int32 round = 2;           //第几轮
+}
+
+//回答问题
+message C2GW_Answer
+{
+    optional int32 answer = 1;     //1是对  2是错
+}
+
+//删除失败的玩家
+message GW2C_AnswerInfo
+{
+    repeated int64 delids = 1;          //删除玩家
+    optional int32 answer = 2;          //正确答案
+}
+
+//比赛结束
+message GW2C_GameOver
+{
+    optional int32 reward = 1;          //获得奖励
+}
