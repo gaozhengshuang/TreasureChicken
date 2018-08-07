@@ -1,0 +1,11 @@
+{
+	"//":"幸运抽奖价格",
+    "LuckDrawPrice":100,
+
+    "//":"免费赠送规则，每天1次，少于500，赠送1000",
+    "FreePresentRule" : {
+        "Count":3,
+        "FloorTrigger":500,
+        "Money":1000
+    }
+}

@@ -1,8 +1,8 @@
-import _ from 'lodash';
+let _ = require('lodash');
 
-import Define from '../Util/Define';
-import Tools from '../Util/Tools';
-import NotificationController from './NotificationController';
+let Define = require('../Util/Define');
+let Tools = require('../Util/Tools');
+let NotificationController = require('./NotificationController');
 
 let AudioController = function () {
     this.audioClips = {};

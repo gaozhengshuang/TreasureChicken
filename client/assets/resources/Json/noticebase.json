@@ -1,0 +1,8 @@
+{
+	"Tool": "github.com/davyxu/tabtoy",
+	"Version": "2.8.10",
+	"TNotice":[
+		{ "Id": 1, "Avatar": 1, "Info": "欢迎来到跳娃娃！" },
+		{ "Id": 2, "Avatar": 1, "Info": "来玩就送，实物大奖领回家！" },
+		{ "Id": 3, "Avatar": 1, "Info": "天天签到送元宝！" }
+	]}

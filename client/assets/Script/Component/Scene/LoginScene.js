@@ -1,4 +1,4 @@
-import Game from '../../Game';
+let Game = require('../../Game');
 
 cc.Class({
     extends: cc.Component,
@@ -47,6 +47,6 @@ cc.Class({
     },
 
     onLoginComplete(msgid, data) {
-        cc.director.loadScene("GameScene");
+        cc.director.loadScene("StartScene");
     },
 });

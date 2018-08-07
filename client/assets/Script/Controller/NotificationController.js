@@ -1,6 +1,6 @@
-import _ from 'lodash';
+let _ = require('lodash');
 
-import Tools from '../util/Tools';
+let Tools = require('../util/Tools');
 var NotificationController = function () {
     this._eventHandlesList = {};
 }

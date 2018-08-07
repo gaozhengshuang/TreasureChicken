@@ -1,4 +1,4 @@
-import Game from '../../Game';
+let Game = require('../../Game');
 
 cc.Class({
     extends: cc.Component,
@@ -22,12 +22,13 @@ cc.Class({
             Game.GameController,
             Game.AudioController,
             Game.LoginController,
-            Game.ResController
+            Game.ResController,
+            Game.TimeController,
         ];
 
         this.models = [
             Game.UserModel,
-            Game.ItemModel
+            Game.RoomModel
         ];
         this.totalCount = this.ctls.length + this.models.length;
         Game.async.waterfall([
@@ -83,8 +84,8 @@ cc.Class({
         if (this.loaded) {
             for (let i = 0; i < this.ctls.length; i++) {
                 let ctl = this.ctls[i];
-                if (Game._.isFunction(ctl.update)) {
-                    ctl.update(dt);
+                if (Game._.isFunction(ctl.Update)) {
+                    ctl.Update(dt);
                 }
             }
         }
