@@ -1,11 +1,10 @@
 import Define from '../Util/Define';
-import TurnGameDefine from '../Util/TurnGameDefine';
 import Tools from '../Util/Tools';
 
 import NotificationController from '../Controller/NotificationController';
 
 var GameController = function () {
-    this.state = TurnGameDefine.GAME_STATE.STATE_PREPARING;
+    this.state = 0;
 }
 
 GameController.prototype.Init = function (cb) {
