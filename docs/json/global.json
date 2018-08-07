@@ -22,6 +22,15 @@
         8001,8002,8003,8004
     ],
 
+    "gametype":[
+        100,1000,3000
+    ],
+    "gamewaittime":10,
+    "gamemaxmember":10,
+    "gameroundtime":5,
+    "gameroundcount":3,
+    "gamerobotnum":3,
+
     "//":"断开连接多久清理玩家,毫秒",
     "disconclean":0,
 

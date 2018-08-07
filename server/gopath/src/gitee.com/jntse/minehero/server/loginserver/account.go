@@ -1,10 +1,11 @@
 package main
+
 import (
 	"fmt"
-	"time"
-	"strings"
 	"github.com/go-redis/redis"
 	pb "github.com/gogo/protobuf/proto"
+	"strings"
+	"time"
 
 	"gitee.com/jntse/gotoolkit/log"
 	"gitee.com/jntse/gotoolkit/net"
@@ -17,18 +18,22 @@ import (
 )
 
 type ClientAccount struct {
-	session network.IBaseNetSession
-	account string
+	session  network.IBaseNetSession
+	account  string
 	tm_login int64
 }
 
 // 查找账户绑定Gate
-func FindAccountGateWay(account string) (*msg.AccountGateInfo, error ) {
+func FindAccountGateWay(account string) (*msg.AccountGateInfo, error) {
 	info := &msg.AccountGateInfo{}
-	key:= fmt.Sprintf("%s_%s", def.RedisKeyAccountGate, account)
-	err := utredis.GetProtoBin(Redis(), key, info);
-	if err == redis.Nil { return nil, nil }
-	if err != nil { return nil, err }
+	key := fmt.Sprintf("%s_%s", def.RedisKeyAccountGate, account)
+	err := utredis.GetProtoBin(Redis(), key, info)
+	if err == redis.Nil {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, err
+	}
 
 	ip, port := info.GetIp(), int(info.GetPort())
 	if GateMgr().IsRegisted(ip, port) == false {
@@ -42,7 +47,7 @@ func FindAccountGateWay(account string) (*msg.AccountGateInfo, error ) {
 // 绑定账户一个Gate
 func BindingAccountGateWay(account string, ip string, port int, vkey string) error {
 	key := fmt.Sprintf("%s_%s", def.RedisKeyAccountGate, account)
-	info := &msg.AccountGateInfo { Ip : pb.String(ip), Port : pb.Int(port), Verifykey : pb.String(vkey) }
+	info := &msg.AccountGateInfo{Ip: pb.String(ip), Port: pb.Int(port), Verifykey: pb.String(vkey)}
 	if err := utredis.SetProtoBin(Redis(), key, info); err != nil {
 		return err
 	}
@@ -51,7 +56,7 @@ func BindingAccountGateWay(account string, ip string, port int, vkey string) err
 }
 
 // 移除账户和Gate的绑定关系
-func UnBindingAccountGateWay(account string) error	{
+func UnBindingAccountGateWay(account string) error {
 	key := fmt.Sprintf("%s_%s", def.RedisKeyAccountGate, account)
 	err := Redis().Del(key).Err()
 	return err
@@ -68,14 +73,18 @@ func InsertAccountToGate(account string, ip string, port int) error {
 func IsFindAccountFromGate(account string, ip string, port int) (bool, error) {
 	key := fmt.Sprintf("%s_%s:%d", def.RedisKeyGateAccounts, ip, port)
 	ok, err := Redis().SIsMember(key, account).Result()
-	if err != nil { return false, err }
+	if err != nil {
+		return false, err
+	}
 	return ok, nil
 }
 
-func AmountGateAccount(ip string, port int) int64	{
+func AmountGateAccount(ip string, port int) int64 {
 	key := fmt.Sprintf("%s_%s:%d", def.RedisKeyGateAccounts, ip, port)
 	num, err := Redis().SCard(key).Result()
-	if err != nil { return 0 }
+	if err != nil {
+		return 0
+	}
 	return num
 }
 
@@ -97,8 +106,8 @@ func QuickLogin(session network.IBaseNetSession, account string) bool {
 	}
 
 	// 检查Gate上是否清除了玩家信息，例如Gate重启过
-	isfind , err := IsFindAccountFromGate(account, ip, port); 
-	if err != nil {	
+	isfind, err := IsFindAccountFromGate(account, ip, port)
+	if err != nil {
 		log.Error("账户%s Is Find Account FromGate 报错err: %s", account, err)
 		return false
 	}
@@ -112,15 +121,15 @@ func QuickLogin(session network.IBaseNetSession, account string) bool {
 
 	log.Info("账户[%s] 快速登陆Gate[ip:%s port:%d]", account, ip, port)
 	session.SendCmd(newL2C_RetLogin("", ip, port, vkey))
-	Login().AddAuthenAccount(account, session)		// 避免同时登陆
+	Login().AddAuthenAccount(account, session) // 避免同时登陆
 	return true
 }
 
 // --------------------------------------------------------------------------
 /// @brief 账户校验
-/// @return 
+/// @return
 // --------------------------------------------------------------------------
-func Authenticate(session network.IBaseNetSession, account string, passwd string) (string) {
+func Authenticate(session network.IBaseNetSession, account string, passwd string) string {
 
 	// 校验账户密码
 	key := fmt.Sprintf("accounts_passwd_%s", account)
@@ -148,7 +157,7 @@ func ProcessInvitationUser(charid uint64, invitationcode string) {
 	Redis().Set(invitkey, invitation_user, 0)
 
 	// 转账给邀请人
-	invitation_openid , geterror := Redis().Get(fmt.Sprintf("user_%d_wechat_openid", invitation_user)).Result()
+	invitation_openid, geterror := Redis().Get(fmt.Sprintf("user_%d_wechat_openid", invitation_user)).Result()
 	if geterror != nil {
 		return
 	}
@@ -160,7 +169,7 @@ func ProcessInvitationUser(charid uint64, invitationcode string) {
 func RegistAccountFromWechatMiniGame(account, passwd, invitationcode, name, face string) string {
 	// 获取账户信息
 	key := "accounts_" + account
-	exist , err := Redis().Exists(key).Result()
+	exist, err := Redis().Exists(key).Result()
 	if err != nil {
 		return "检查账户存在 Redis报错"
 	}
@@ -190,7 +199,7 @@ func GetRegistAuthCode(phone string) string {
 		}
 
 		// 检查redis是否获取过验证码(自动过期)
-		exist , _ := Redis().Exists(keyauthcode).Result()
+		exist, _ := Redis().Exists(keyauthcode).Result()
 		if exist == 1 {
 			errcode = "稍后再试"
 			break
@@ -203,11 +212,13 @@ func GetRegistAuthCode(phone string) string {
 		}
 
 		// 缓存验证码
-		Redis().Set(keyauthcode, authcode, time.Second * 60).Result()
+		Redis().Set(keyauthcode, authcode, time.Second*60).Result()
 	}
 
-	if errcode != "" { log.Error("获取注册验证码失败 %s [%s]", keyauthcode, errcode) }
-	return errcode 
+	if errcode != "" {
+		log.Error("获取注册验证码失败 %s [%s]", keyauthcode, errcode)
+	}
+	return errcode
 }
 
 func RegistAccountCheck(phone, passwd, invitationcode, authcode, nickname string) (errcode string) {
@@ -231,7 +242,7 @@ func RegistAccountCheck(phone, passwd, invitationcode, authcode, nickname string
 		return
 	}
 
-	if strings.Count(nickname, "") - 1 > 8 {
+	if strings.Count(nickname, "")-1 > 8 {
 		errcode = "昵称长度不能大于8个字符"
 		return
 	}
@@ -251,18 +262,18 @@ func RegistAccountCheck(phone, passwd, invitationcode, authcode, nickname string
 
 	// 是否是机器人注册
 	if authcode == "robot@free@regist" {
-		freeregist , _ := Redis().Get(authcode).Int64()		// Robot自由注册redis标记
-		if freeregist == 0  {
+		freeregist, _ := Redis().Get(authcode).Int64() // Robot自由注册redis标记
+		if freeregist == 0 {
 			errcode = "使用了机器人自由注册码，但服务器没有Robot自由注册标记"
 			return
 		}
-	}else {
+	} else {
 		key := fmt.Sprintf("regist_phone_%s", phone)
-		svrauthcode , err := Redis().Get(key).Result()
+		svrauthcode, err := Redis().Get(key).Result()
 		if err == redis.Nil {
 			errcode = "请先获取验证码"
 			return
-		}else if err != nil {
+		} else if err != nil {
 			errcode = "redis暂时不可用"
 			log.Error("检查账户是否存在 Redis错误:%s", err)
 			return
@@ -292,10 +303,9 @@ func RegistAccountCheck(phone, passwd, invitationcode, authcode, nickname string
 		errcode = "昵称重复"
 		return
 	}
-	
+
 	return ""
 }
-
 
 // --------------------------------------------------------------------------
 /// @brief 注册账户
@@ -303,9 +313,9 @@ func RegistAccountCheck(phone, passwd, invitationcode, authcode, nickname string
 /// @param account 账户名
 /// @param passwd 密码
 /// @param invitationcode 邀请码
-/// @param 
+/// @param
 ///
-/// @return 
+/// @return
 // --------------------------------------------------------------------------
 func RegistAccount(account, passwd, invitationcode, nickname, face string) (errcode string) {
 	errcode = ""
@@ -330,17 +340,17 @@ func RegistAccount(account, passwd, invitationcode, nickname, face string) (errc
 
 		// 实名认证
 		// 生成唯一userid
-		userid , errstr := GenerateUserId()
-		if errstr !=  "" {
+		userid, errstr := GenerateUserId()
+		if errstr != "" {
 			errcode = errstr
 			break
 		}
 
 		// 新建账户
-		info := &msg.AccountInfo {
+		info := &msg.AccountInfo{
 			Account: &account,
-			Passwd: &passwd,
-			Userid: pb.Uint64(userid),
+			Passwd:  &passwd,
+			Userid:  pb.Uint64(userid),
 		}
 
 		keyaccount := fmt.Sprintf("accounts_%s", account)
@@ -349,16 +359,16 @@ func RegistAccount(account, passwd, invitationcode, nickname, face string) (errc
 			log.Error("新建账户%s失败，err: %s", account, errsetbin)
 			break
 		}
-		
+
 		// 初始元宝和金卷
 		Yuanbao := uint32(tbl.Global.Newuser.Yuanbao)
-		userinfo := &msg.Serialize {
-			Entity : &msg.EntityBase{ Id:pb.Uint64(userid), Name:pb.String(nickname), Face:pb.String(""), Account:pb.String(account) },
-			Base : &msg.UserBase{Money: pb.Uint32(1000), Invitationcode:pb.String(invitationcode), Yuanbao:pb.Uint32(Yuanbao), Level:pb.Uint32(1)},
-			Item : &msg.ItemBin{},
+		userinfo := &msg.Serialize{
+			Entity: &msg.EntityBase{Id: pb.Uint64(userid), Name: pb.String(nickname), Face: pb.String(""), Account: pb.String(account)},
+			Base:   &msg.UserBase{Money: pb.Uint32(1000), Invitationcode: pb.String(invitationcode), Yuanbao: pb.Uint32(Yuanbao), Level: pb.Uint32(1)},
+			Item:   &msg.ItemBin{},
 		}
 		userkey := fmt.Sprintf("userbin_%d", userid)
-		log.Info("userinfo=%v",userinfo)
+		log.Info("userinfo=%v", userinfo)
 		if err := utredis.SetProtoBin(Redis(), userkey, userinfo); err != nil {
 			errcode = "插入玩家数据失败"
 			log.Error("新建账户%s插入玩家数据失败，err: %s", account, err)
@@ -376,3 +386,22 @@ func RegistAccount(account, passwd, invitationcode, nickname, face string) (errc
 	return errcode
 }
 
+// 检查新账户
+func CheckNewAccount(session network.IBaseNetSession, account, name, face, passwd string) string {
+	// 获取账户信息
+	key := "accounts_" + account
+	exist, err := Redis().Exists(key).Result()
+	if err != nil {
+		return "登陆检查账户是否存在"
+	}
+
+	if exist == 1 {
+		return ""
+	}
+	log.Info("注册新账户[%s]", account) // 不存在的账户
+	name = fmt.Sprintf("player_%s", account)
+	if errcode := RegistAccount(account, passwd, "", name, ""); errcode != "" {
+		return fmt.Sprintf("注册账户失败 账户[%s] 错误[%s]", account, errcode)
+	}
+	return ""
+}

@@ -117,7 +117,7 @@ func (this* C2GWMsgHandler) Init() {
 
 // 客户端心跳
 func on_C2GW_HeartBeat(session network.IBaseNetSession, message interface{}) {
-	//tmsg := message.(*msg.C2GW_HeartBeat)
+	tmsg := message.(*msg.C2GW_HeartBeat)
 	//log.Info(reflect.TypeOf(tmsg).String())
 
 	//account, ok := session.UserDefData().(string)
@@ -142,11 +142,11 @@ func on_C2GW_HeartBeat(session network.IBaseNetSession, message interface{}) {
 
 	//curtime := util.CURTIMEUS()
 	//log.Info("receive heart beat msg interval=%d", curtime - tmsg.GetTime())
-	//session.SendCmd(&msg.GW2C_HeartBeat{
-	//	Uid: tmsg.Uid,
-	//	Time: pb.Int64(util.CURTIMEUS()),
-	//	Test: tmsg.Test,
-	//})
+	session.SendCmd(&msg.GW2C_HeartBeat{
+		Uid: tmsg.Uid,
+		Time: pb.Int64(util.CURTIMEUS()),
+		Test: tmsg.Test,
+	})
 }
 
 func on_C2GW_ReqStartGame(session network.IBaseNetSession, message interface{}) {

@@ -121,7 +121,7 @@ func (this *GateUser) SetHeartBeat(now int64) {
 	this.tm_heartbeat = now
 	if tm_delay < 1000 {
 		//log.Warn("玩家[%s %d] 心跳太过频繁[%d ms]", this.Name(), this.Id(), tm_delay)
-	}else if tm_delay > 6000 {
+	}else if tm_delay > 15000 {
 		log.Warn("玩家[%s %d] 心跳延迟了[%d ms]，网络不好?", this.Name(), this.Id(), tm_delay)
 	}
 }

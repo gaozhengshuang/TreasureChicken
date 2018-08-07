@@ -11,6 +11,7 @@ import (
 	"gitee.com/jntse/gotoolkit/util"
 	"gitee.com/jntse/minehero/pbmsg"
 	"gitee.com/jntse/minehero/server/tbl"
+    "gitee.com/jntse/minehero/server/tbl/excel"
 	"gitee.com/jntse/minehero/server/def"
 	pb "github.com/gogo/protobuf/proto"
 	"github.com/go-redis/redis"
@@ -60,6 +61,7 @@ type GateServer struct {
 	quit_graceful 	bool
 	runtimestamp	int64
 	hourmonitor		*util.IntHourMonitorPool
+    namebase        []*table.TNameDefine
 }
 
 var g_GateServer *GateServer = nil
@@ -212,7 +214,9 @@ func (this *GateServer) Init(fileconf string) bool {
 	this.ticker1m.Start()
 	this.ticker1s.Start()
 	this.ticker100ms.Start()
-	this.runtimestamp = 0
+    this.runtimestamp = 0
+    this.namebase = make([]*table.TNameDefine,0)
+    for _, v := range tbl.NameBase.TNameById { this.namebase = append(this.namebase, v) }
 	return true
 }
 
@@ -230,7 +234,6 @@ func (this *GateServer) Handler100msTick(now int64) {
 	if this.quit_graceful && this.usermgr.Amount() == 0 {
 		g_KeyBordInput.Insert("quit")
 	}
-
     this.roomsvrmgr.Tick(now)
 }
 
@@ -463,6 +466,18 @@ func IntHourClockCallback(now int64) {
 	log.Info("==========整点回调开始===========")
 	//UserMgr().GiveFreeStep(now)
 	log.Info("==========整点点回调结束===========")
+}
+
+func (this *GateServer) GetRandNickName() string {
+    lenlist := int32(len(this.namebase))
+    if lenlist <= 0 {
+        return "穿靴子的猫"
+    }
+    rnd := util.RandBetween(0, lenlist-1)
+    if rnd >= 0 && rnd < lenlist {
+        return this.namebase[rnd].Name
+    }
+    return "穿靴子的猫"
 }
 
 

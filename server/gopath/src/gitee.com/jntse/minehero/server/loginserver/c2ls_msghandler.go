@@ -1,19 +1,19 @@
 package main
-import ( 
-	_"reflect"
-	"fmt"
-	_"math/rand"
+
+import (
 	"crypto/md5"
-	"strings"
-	pb "github.com/gogo/protobuf/proto"
+	"fmt"
+	_ "gitee.com/jntse/gotoolkit/eventqueue"
 	"gitee.com/jntse/gotoolkit/log"
 	"gitee.com/jntse/gotoolkit/net"
 	"gitee.com/jntse/gotoolkit/util"
-	_"gitee.com/jntse/gotoolkit/eventqueue"
-	"gitee.com/jntse/minehero/server/tbl"
 	"gitee.com/jntse/minehero/pbmsg"
+	"gitee.com/jntse/minehero/server/tbl"
+	pb "github.com/gogo/protobuf/proto"
+	_ "math/rand"
+	_ "reflect"
+	"strings"
 )
-
 
 //func init() {
 //	NewC2LSMsgHandler()
@@ -29,7 +29,7 @@ func NewC2LSMsgHandler() *C2LSMsgHandler {
 	return handler
 }
 
-func (this* C2LSMsgHandler) Init() {
+func (this *C2LSMsgHandler) Init() {
 
 	this.msgparser = network.NewProtoParser("C2LS_MsgParser", tbl.ProtoMsgIndexGenerator)
 	if this.msgparser == nil {
@@ -42,21 +42,20 @@ func (this* C2LSMsgHandler) Init() {
 	this.msgparser.RegistProtoMsg(msg.C2L_ReqRegistAccount{}, on_C2L_ReqRegistAccount)
 	this.msgparser.RegistProtoMsg(msg.C2L_ReqRegistAuthCode{}, on_C2L_ReqRegistAuthCode)
 
-
 	// 发
 	this.msgparser.RegistSendProto(msg.L2C_RetLogin{})
 	this.msgparser.RegistSendProto(msg.L2C_RetRegistAccount{})
 }
 
 func newL2C_RetLogin(reason string, ip string, port int, key string) *msg.L2C_RetLogin {
-	send := &msg.L2C_RetLogin {
-		Result : pb.Int32(1),
-		Reason : pb.String(reason),
-		Gatehost : &msg.IpHost {
-		Ip : pb.String(ip),
-		Port : pb.Int(port),
+	send := &msg.L2C_RetLogin{
+		Result: pb.Int32(1),
+		Reason: pb.String(reason),
+		Gatehost: &msg.IpHost{
+			Ip:   pb.String(ip),
+			Port: pb.Int(port),
 		},
-		Verifykey : pb.String(key),
+		Verifykey: pb.String(key),
 	}
 	if reason != "" {
 		send.Result = pb.Int32(0)
@@ -69,7 +68,6 @@ func on_C2L_ReqRegistAuthCode(session network.IBaseNetSession, message interface
 	//tmsg := message.(*msg.C2L_ReqRegistAuthCode)
 	//GetRegistAuthCode(tmsg.GetPhone())
 }
-
 
 // 注册账户
 func on_C2L_ReqRegistAccount(session network.IBaseNetSession, message interface{}) {
@@ -88,13 +86,13 @@ func on_C2L_ReqRegistAccount(session network.IBaseNetSession, message interface{
 		}
 	}
 
-
 	// 回复
-	send := &msg.L2C_RetRegistAccount{Errcode : pb.String(errcode) }
+	send := &msg.L2C_RetRegistAccount{Errcode: pb.String(errcode)}
 	session.SendCmd(send)
-	if errcode != "" { log.Info("[注册] 账户[%s] 注册失败[%s]", phone, errcode) }
+	if errcode != "" {
+		log.Info("[注册] 账户[%s] 注册失败[%s]", phone, errcode)
+	}
 }
-
 
 // 请求登陆验证
 func on_C2L_ReqLogin(session network.IBaseNetSession, message interface{}) {
@@ -111,7 +109,11 @@ func on_C2L_ReqLogin(session network.IBaseNetSession, message interface{}) {
 		}
 
 		// 登陆验证
-		if errcode = Authenticate(session, account, passwd); errcode != "" {
+		//if errcode = Authenticate(session, account, passwd); errcode != "" {
+		//	break
+		//}
+		if CheckNewAccount(session, account, "", "", passwd) != "" {
+			errcode = "检查新账户报错"
 			break
 		}
 
@@ -141,15 +143,15 @@ func on_C2L_ReqLogin(session network.IBaseNetSession, message interface{}) {
 		md5string := fmt.Sprintf("%s_%x", account, md5bytes)
 
 		sendmsg := &msg.L2GW_ReqRegistUser{
-			Account : pb.String(account),
-			Expire : pb.Int64(now+10000),	// 10秒
-			Gatehost : pb.String(agent.Host()),
-			Sid : pb.Int(session.Id()),
+			Account:   pb.String(account),
+			Expire:    pb.Int64(now + 10000), // 10秒
+			Gatehost:  pb.String(agent.Host()),
+			Sid:       pb.Int(session.Id()),
 			Timestamp: pb.Int64(now),
-			Verifykey : pb.String(md5string),
+			Verifykey: pb.String(md5string),
 		}
 		agent.SendMsg(sendmsg)
-		Login().AddAuthenAccount(account, session)		// 避免同时登陆
+		Login().AddAuthenAccount(account, session) // 避免同时登陆
 		tm5 := util.CURTIMEUS()
 		log.Info("登陆验证通过，请求注册玩家到Gate sid[%d] account[%s] host[%s] 登陆耗时%dus", session.Id(), account, agent.Host(), tm5-tm1)
 		return
@@ -165,7 +167,7 @@ func on_C2L_ReqLogin(session network.IBaseNetSession, message interface{}) {
 // 微信小游戏登陆
 func on_C2L_ReqLoginWechat(session network.IBaseNetSession, message interface{}) {
 	tmsg := message.(*msg.C2L_ReqLoginWechat)
-	tm1  := util.CURTIMEUS()
+	tm1 := util.CURTIMEUS()
 	errcode, openid, face, nickname := "", tmsg.GetOpenid(), tmsg.GetFace(), tmsg.GetNickname()
 	account, passwd, invitationcode := openid, "", ""
 	switch {
@@ -211,15 +213,15 @@ func on_C2L_ReqLoginWechat(session network.IBaseNetSession, message interface{})
 		md5string := fmt.Sprintf("%s_%x", account, md5bytes)
 
 		sendmsg := &msg.L2GW_ReqRegistUser{
-			Account : pb.String(account),
-			Expire : pb.Int64(now+10000),	// 10秒
-			Gatehost : pb.String(agent.Host()),
-			Sid : pb.Int(session.Id()),
+			Account:   pb.String(account),
+			Expire:    pb.Int64(now + 10000), // 10秒
+			Gatehost:  pb.String(agent.Host()),
+			Sid:       pb.Int(session.Id()),
 			Timestamp: pb.Int64(now),
-			Verifykey : pb.String(md5string),
+			Verifykey: pb.String(md5string),
 		}
 		agent.SendMsg(sendmsg)
-		Login().AddAuthenAccount(account, session)		// 避免同时登陆
+		Login().AddAuthenAccount(account, session) // 避免同时登陆
 		tm5 := util.CURTIMEUS()
 		log.Info("登陆验证通过，请求注册玩家到Gate sid[%d] account[%s] host[%s] 登陆耗时%dus", session.Id(), account, agent.Host(), tm5-tm1)
 		return
@@ -231,6 +233,3 @@ func on_C2L_ReqLoginWechat(session network.IBaseNetSession, message interface{})
 		session.Close()
 	}
 }
-
-
-
