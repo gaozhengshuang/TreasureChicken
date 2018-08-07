@@ -26,6 +26,7 @@ type RoomAgent struct {
     answerstatus        int32
     answertime          int32
     lasttick            int32                               //上次tick时间
+    robottick           map[int64]int32             
 }
 
 func NewRoomAgent(id int64) *RoomAgent {
@@ -42,6 +43,7 @@ func NewRoomAgent(id int64) *RoomAgent {
     gate.curanswer = 0
     gate.answerstatus = 0
     gate.answertime = 0
+    gate.robottick = make(map[int64]int32)
     gate.InitQuestion()
     gate.InitRobot()
 	return gate
@@ -51,6 +53,7 @@ func (this *RoomAgent) InitRobot() {
     for i := 1; i <= int(tbl.Global.Gamerobotnum); i++ {
         member := &msg.RoomMemberInfo{Uid : pb.Int64(int64(i)), Name : pb.String(GateSvr().GetRandNickName()), Answer : pb.Int32(util.RandBetween(1,2))}
         this.AddMember(member, 1000)
+        this.robottick[int64(i)] = util.RandBetween(1,5)
     }
     this.updateflag = false
 }
@@ -108,6 +111,7 @@ func (this *RoomAgent) AnswerQuestion(uid int64, answer int32){
         return
     }
     member.Answer = pb.Int32(answer)
+    this.updateflag = true
     //this.UpdateOne(member.GetUid())
 }
 
@@ -185,6 +189,11 @@ func (this *RoomAgent) DoingGame(){
             this.ChangeStatus(1)
         case 1:
             if this.answertime > 0 {
+                for k, v := range this.robottick {
+                    if this.answertime == v {
+                        this.AnswerQuestion(k, this.curanswer)
+                    }
+                }
                 this.answertime--
                 if this.answertime == 0 {
                     this.CalcAnswer()
@@ -213,6 +222,9 @@ func (this *RoomAgent) SendQuestion(round int32){
     send := &msg.GW2C_QuestionInfo{Txt : pb.String(qconfig.Question), Round : pb.Int32(round+1), Time : pb.Int32(int32(tbl.Global.Gameroundtime))}
     this.SendToAllMsg(send)
     log.Info("房间[%d] 当前轮数[%d] 发送题目[%d][%s], 答案:%d", this.Id(), round+1, qconfig.Id, qconfig.Question, qconfig.Answer)
+    for i := 1; i <= int(tbl.Global.Gamerobotnum); i++ {
+        this.robottick[int64(i)] = util.RandBetween(1,5)
+    }
 }
 
 func (this *RoomAgent) ChangeStatus(status int32){

@@ -510,10 +510,10 @@ func (this *GateUser) Online(session network.IBaseNetSession) bool {
 
 func (this *GateUser) Syn(){
 	this.SendUserBase()
-	this.SendSign()
+	//this.SendSign()
 	//this.CheckGiveFreeStep(util.CURTIME(), "上线跨整点")
 	this.CheckHaveCompensation()
-	this.SyncBigRewardPickNum()
+	//this.SyncBigRewardPickNum()
 	//this.QueryPlatformCoins()
 }
 
