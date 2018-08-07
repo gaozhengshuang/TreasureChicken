@@ -142,7 +142,7 @@ func (this *GateServer) OnClose(session network.IBaseNetSession) {
 		this.usermgr.OnMatchServerClose()
 	case "TaskRoom":
 		log.Info("sid[%d] 和RoomServer连接断开", sid)
-		this.roomsvrmgr.OnClose(sid)
+		//this.roomsvrmgr.OnClose(sid)
 		break
 	case "TaskClient":
 		log.Info("sid[%d] 和客户端连接断开", sid)
@@ -230,6 +230,8 @@ func (this *GateServer) Handler100msTick(now int64) {
 	if this.quit_graceful && this.usermgr.Amount() == 0 {
 		g_KeyBordInput.Insert("quit")
 	}
+
+    this.roomsvrmgr.Tick(now)
 }
 
 func (this *GateServer) InitMsgHandler() {
@@ -401,7 +403,7 @@ func (this *GateServer) RegistToMatchServer() {
 
 func (this *GateServer) RegistRoomServer(agent *RoomAgent) {
 	this.roomsvrmgr.AddRoom(agent)
-	log.Info("注册房间服 id=%d [%s] 当前总数:%d", agent.Id(), agent.name, this.roomsvrmgr.Num())
+	log.Info("注册房间服 id=%d 当前总数:%d", agent.Id(), this.roomsvrmgr.Num())
 }
 
 //func (this *GateServer) GetUserBySession(session network.IBaseNetSession) *GateUser {

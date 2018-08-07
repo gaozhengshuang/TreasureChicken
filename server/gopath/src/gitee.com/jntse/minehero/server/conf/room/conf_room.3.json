@@ -6,12 +6,14 @@
         "xml":"../tbl/xml/"
     },
     "event_queuesize":100000,
+    "isserver": true,
 	"connects": [
 		{
 			"name": "MatchConnector",
 			"parser": "MS2RS_MsgParser",
 			"host": {
-				"ip": "192.168.30.203", "port": 8002
+				"ip": "192.168.30.203",
+				"port": 7120
 			},
             "interval": 3,
             "svrchannel":true,
@@ -21,7 +23,8 @@
 			"name": "GateConnector",
 			"parser": "GW2RS_MsgParser",
 			"host": {
-				"ip": "", "port": 0
+				"ip": "",
+				"port": 0
             },
             "interval": 1,
             "svrchannel":true,
@@ -33,7 +36,8 @@
         "passwd": "",
         "db": 0,
         "host": {
-            "ip": "192.168.30.203", "port": 6377
+            "ip": "192.168.30.203",
+            "port": 6379
         }
     }
 }

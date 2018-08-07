@@ -1,7 +1,7 @@
 package main
 import (
 	"reflect"
-	"fmt"
+	_"fmt"
 	"gitee.com/jntse/gotoolkit/log"
 	"gitee.com/jntse/gotoolkit/net"
 	"gitee.com/jntse/minehero/pbmsg"
@@ -56,19 +56,19 @@ func (this* RS2GWMsgHandler) Init() {
 }
 
 func on_RS2GW_ReqRegist(session network.IBaseNetSession, message interface{}) {
-	tmsg := message.(*msg.RS2GW_ReqRegist)
+	//tmsg := message.(*msg.RS2GW_ReqRegist)
 	//log.Info(reflect.TypeOf(tmsg).String())
 
 	// TODO: 重复注册服务器为了第一时间发现问题使用了panic
-	name := tmsg.GetAgentname()
-	if RoomSvrMgr().IsRegisted(name) == true {
-		log.Fatal(fmt.Sprintf("重复注册房间服务器 %s", name))
-		session.SendCmd(&msg.GW2RS_RetRegist{Errcode: pb.String("重复注册房间服务器"), Agentname:pb.String(GateSvr().Name())})
-		return
-	}
+	//name := tmsg.GetAgentname()
+	//if RoomSvrMgr().IsRegisted(name) == true {
+	//	log.Fatal(fmt.Sprintf("重复注册房间服务器 %s", name))
+	//	session.SendCmd(&msg.GW2RS_RetRegist{Errcode: pb.String("重复注册房间服务器"), Agentname:pb.String(GateSvr().Name())})
+	//	return
+	//}
 
-	RoomSvrMgr().AddNew(session, name)
-	session.SendCmd(&msg.GW2RS_RetRegist{Agentname:pb.String(GateSvr().Name())})
+	//RoomSvrMgr().AddNew(session, name)
+	//session.SendCmd(&msg.GW2RS_RetRegist{Agentname:pb.String(GateSvr().Name())})
 }
 
 func on_GW2C_MsgNotify(session network.IBaseNetSession, message interface{}) {

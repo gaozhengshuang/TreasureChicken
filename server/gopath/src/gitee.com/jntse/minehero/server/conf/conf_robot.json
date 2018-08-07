@@ -11,7 +11,8 @@
 			"name": "LoginConnector",
 			"parser": "LS2C_MsgParser",
 			"host": {
-				"ip": "192.168.30.203", "port": 7002
+				"ip": "192.168.30.202",
+				"port": 7020
 			},
             "interval": 1,
             "svrchannel":false,
@@ -22,7 +23,8 @@
 			"name": "GateConnector",
 			"parser": "GW2C_MsgParser",
 			"host": {
-				"ip": "", "port": 0
+				"ip": "",
+				"port": 0
             },
             "interval": 1,
             "svrchannel":false,

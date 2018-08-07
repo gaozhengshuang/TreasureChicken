@@ -3,13 +3,14 @@ package msg;
 //进入比赛
 message C2GW_JoinGame
 {
+    optional int32  type = 1;               //游戏类型 (0 100金币 1 1000金币 2 3000金币)
 }
 
 //房间成员信息
 message RoomMemberInfo
 {
     optional int64 uid  = 1;                    //玩家id
-    optional int32 name = 2;                    //玩家名字
+    optional string name = 2;                    //玩家名字
     optional int32 answer = 3;                  //玩家答案
 }
 

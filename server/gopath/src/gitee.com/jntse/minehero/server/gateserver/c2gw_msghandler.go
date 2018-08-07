@@ -51,21 +51,25 @@ func (this* C2GWMsgHandler) Init() {
 	// 收
 	this.msgparser.RegistProtoMsg(msg.C2GW_ReqLogin{}, on_C2GW_ReqLogin)
 	this.msgparser.RegistProtoMsg(msg.C2GW_HeartBeat{}, on_C2GW_HeartBeat)
-	this.msgparser.RegistProtoMsg(msg.C2GW_ReqStartGame{}, on_C2GW_ReqStartGame)
-	this.msgparser.RegistProtoMsg(msg.C2GW_BuyItem{}, on_C2GW_BuyItem)
-	this.msgparser.RegistProtoMsg(msg.C2GW_Get7DayReward{}, on_C2GW_Get7DayReward)
-	this.msgparser.RegistProtoMsg(msg.C2GW_ReqDeliveryGoods{}, on_C2GW_ReqDeliveryGoods)
-	this.msgparser.RegistProtoMsg(msg.C2GW_UseBagItem{}, on_C2GW_UseBagItem)
-	this.msgparser.RegistProtoMsg(msg.C2GW_ReqRechargeMoney{}, on_C2GW_ReqRechargeMoney)
-	this.msgparser.RegistProtoMsg(msg.C2GW_SellBagItem{}, on_C2GW_SellBagItem)
+	//this.msgparser.RegistProtoMsg(msg.C2GW_ReqStartGame{}, on_C2GW_ReqStartGame)
+	//this.msgparser.RegistProtoMsg(msg.C2GW_BuyItem{}, on_C2GW_BuyItem)
+	//this.msgparser.RegistProtoMsg(msg.C2GW_Get7DayReward{}, on_C2GW_Get7DayReward)
+	//this.msgparser.RegistProtoMsg(msg.C2GW_ReqDeliveryGoods{}, on_C2GW_ReqDeliveryGoods)
+	//this.msgparser.RegistProtoMsg(msg.C2GW_UseBagItem{}, on_C2GW_UseBagItem)
+	//this.msgparser.RegistProtoMsg(msg.C2GW_ReqRechargeMoney{}, on_C2GW_ReqRechargeMoney)
+	//this.msgparser.RegistProtoMsg(msg.C2GW_SellBagItem{}, on_C2GW_SellBagItem)
 	this.msgparser.RegistProtoMsg(msg.C2GW_ReqDeliveryDiamond{}, on_C2GW_ReqDeliveryDiamond)
-	this.msgparser.RegistProtoMsg(msg.C2GW_PlatformRechargeDone{}, on_C2GW_PlatformRechargeDone)
+	//this.msgparser.RegistProtoMsg(msg.C2GW_PlatformRechargeDone{}, on_C2GW_PlatformRechargeDone)
 
-	this.msgparser.RegistProtoMsg(msg.C2GW_SendWechatAuthCode{}, on_C2GW_SendWechatAuthCode)
-	this.msgparser.RegistProtoMsg(msg.C2GW_StartLuckyDraw{}, on_C2GW_StartLuckyDraw)
+	//this.msgparser.RegistProtoMsg(msg.C2GW_SendWechatAuthCode{}, on_C2GW_SendWechatAuthCode)
+	//this.msgparser.RegistProtoMsg(msg.C2GW_StartLuckyDraw{}, on_C2GW_StartLuckyDraw)
 	//this.msgparser.RegistProtoMsg(msg.C2GW_AddDeliveryAddress{}, on_C2GW_AddDeliveryAddress)
 	//this.msgparser.RegistProtoMsg(msg.C2GW_DelDeliveryAddress{}, on_C2GW_DelDeliveryAddress)
-	this.msgparser.RegistProtoMsg(msg.C2GW_ChangeDeliveryAddress{}, on_C2GW_ChangeDeliveryAddress)
+	//this.msgparser.RegistProtoMsg(msg.C2GW_ChangeDeliveryAddress{}, on_C2GW_ChangeDeliveryAddress)
+
+    //答题 收
+    this.msgparser.RegistProtoMsg(msg.C2GW_JoinGame{}, on_C2GW_JoinGame)
+    this.msgparser.RegistProtoMsg(msg.C2GW_Answer{}, on_C2GW_Answer)
 
 	// 收战场消息
 	this.msgparser.RegistProtoMsg(msg.BT_ReqEnterRoom{}, on_BT_ReqEnterRoom)
@@ -95,6 +99,13 @@ func (this* C2GWMsgHandler) Init() {
 	this.msgparser.RegistSendProto(msg.GW2C_LuckyDrawHit{})
 	this.msgparser.RegistSendProto(msg.GW2C_SendDeliveryAddressList{})
 	this.msgparser.RegistSendProto(msg.GW2C_FreePresentNotify{})
+
+    //答题 发
+    this.msgparser.RegistSendProto(msg.GW2C_UpdateRoomInfo{})
+    this.msgparser.RegistSendProto(msg.GW2C_StartGame{})
+    this.msgparser.RegistSendProto(msg.GW2C_QuestionInfo{})
+    this.msgparser.RegistSendProto(msg.GW2C_AnswerInfo{})
+    this.msgparser.RegistSendProto(msg.GW2C_GameOver{})
 
 	// Room
 	this.msgparser.RegistSendProto(msg.BT_GameInit{})
@@ -525,6 +536,28 @@ func on_C2GW_ChangeDeliveryAddress(session network.IBaseNetSession, message inte
 	user.AddAddress(Addr.GetReceiver(), Addr.GetPhone(), Addr.GetAddress())
 	user.SendAddress()
 	log.Info("玩家[%s %d] 修改收货地址，新地址[%s %s %s]", user.Name(), user.Id(), Addr.GetReceiver(), Addr.GetPhone(), Addr.GetAddress())
+}
+
+func on_C2GW_JoinGame(session network.IBaseNetSession, message interface{}) {
+    //tmsg := message.(*msg.C2GW_JoinGame)
+    user := ExtractSessionUser(session)
+    if user == nil {
+        log.Fatal(fmt.Sprintf("sid:%d 没有绑定用户", session.Id()))
+        session.Close()
+        return
+    }
+    RoomSvrMgr().JoinGame(user)    
+}
+
+func on_C2GW_Answer(session network.IBaseNetSession, message interface{}) {
+    tmsg := message.(*msg.C2GW_Answer)
+    user := ExtractSessionUser(session)
+    if user == nil {
+        log.Fatal(fmt.Sprintf("sid:%d 没有绑定用户", session.Id()))
+        session.Close()
+        return
+    }
+    RoomSvrMgr().AnswerQuestion(user, tmsg.GetAnswer())
 }
 
 

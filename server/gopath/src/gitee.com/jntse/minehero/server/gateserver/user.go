@@ -91,6 +91,7 @@ type GateUser struct {
 	token			string		// token
 	asynev			eventque.AsynEventQueue	// 异步事件处理
 	broadcastbuffer []uint64	// 广播消息缓存
+    roomid          int64       //房间id
 }
 
 func NewGateUser(account, key, token string) *GateUser {
@@ -105,6 +106,7 @@ func NewGateUser(account, key, token string) *GateUser {
 	u.savedone = false
 	u.token = token
 	u.broadcastbuffer = make([]uint64,0)
+    u.roomid = 0
 	return u
 }
 
@@ -605,7 +607,7 @@ func (this *GateUser) SendRoomMsg(msg pb.Message) {
 		log.Error("玩家[%s %d]没有房间信息", this.Name(), this.Id())
 		return
 	}
-	RoomSvrMgr().SendMsg(this.roomdata.sid_room, msg)
+	//RoomSvrMgr().SendMsg(this.roomdata.sid_room, msg)
 }
 
 // 转发消息到roomserver(效率不是最理想的方式)
@@ -678,23 +680,23 @@ func (this *GateUser) ReqStartGame(gamekind int32) (errcode string) {
 
 // 开启游戏房间成功
 func (this *GateUser) StartGameOk(servername string, roomid int64) {
-	var agent *RoomAgent = RoomSvrMgr().FindByName(servername)
-	if agent == nil {
-		log.Error("玩家[%s %d] 开房间成功，但找不到RoomServer[%s]", this.Name(), this.Id(), servername)
-		return
-	}
+	//var agent *RoomAgent = RoomSvrMgr().FindByName(servername)
+	//if agent == nil {
+	//	log.Error("玩家[%s %d] 开房间成功，但找不到RoomServer[%s]", this.Name(), this.Id(), servername)
+	//	return
+	//}
 
-	this.roomdata.roomid = roomid
-	this.roomdata.sid_room = agent.Id()
+	//this.roomdata.roomid = roomid
+	//this.roomdata.sid_room = agent.Id()
 
 	// TODO: 将个人信息上传到Room
-	send := &msg.BT_UploadGameUser{}
-	send.Roomid = pb.Int64(roomid)
+	//send := &msg.BT_UploadGameUser{}
+	//send.Roomid = pb.Int64(roomid)
 	//send.Bin = pb.Clone(this.PackBin()).(*msg.Serialize)
-	send.Bin = this.PackBin()
-	agent.SendMsg(send)
+	//send.Bin = this.PackBin()
+	//agent.SendMsg(send)
 
-	log.Info("玩家[%s %d] 创建房间[%d]成功 向RS上传玩家个人数据 ts[%d]", this.Name(), this.Id(), roomid, util.CURTIMEMS())
+	//log.Info("玩家[%s %d] 创建房间[%d]成功 向RS上传玩家个人数据 ts[%d]", this.Name(), this.Id(), roomid, util.CURTIMEMS())
 }
 
 // 开启游戏房间失败
