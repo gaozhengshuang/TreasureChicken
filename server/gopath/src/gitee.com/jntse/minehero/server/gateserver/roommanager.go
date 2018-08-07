@@ -26,10 +26,12 @@ type RoomAgent struct {
     answerstatus        int32
     answertime          int32
     lasttick            int32                               //上次tick时间
-    robottick           map[int64]int32             
+    robottick           map[int64]int32            
+    waittime            int32
+    gametype            int32 
 }
 
-func NewRoomAgent(id int64) *RoomAgent {
+func NewRoomAgent(id int64, gtype int32) *RoomAgent {
 	gate := &RoomAgent{}
     gate.uid = id
     gate.members = make(map[int64]*msg.RoomMemberInfo)
@@ -43,6 +45,8 @@ func NewRoomAgent(id int64) *RoomAgent {
     gate.curanswer = 0
     gate.answerstatus = 0
     gate.answertime = 0
+    gate.waittime = 2
+    gate.gametype = gtype
     gate.robottick = make(map[int64]int32)
     gate.InitQuestion()
     gate.InitRobot()
@@ -53,7 +57,6 @@ func (this *RoomAgent) InitRobot() {
     for i := 1; i <= int(tbl.Global.Gamerobotnum); i++ {
         member := &msg.RoomMemberInfo{Uid : pb.Int64(int64(i)), Name : pb.String(GateSvr().GetRandNickName()), Answer : pb.Int32(util.RandBetween(1,2))}
         this.AddMember(member, 1000)
-        this.robottick[int64(i)] = util.RandBetween(1,5)
     }
     this.updateflag = false
 }
@@ -184,10 +187,21 @@ func (this *RoomAgent) IsStart() bool {
 func (this *RoomAgent) DoingGame(){
     switch (this.answerstatus){
         case 0:
-            this.SendQuestion(this.round)
-            this.answertime = int32(tbl.Global.Gameroundtime)
+            this.SendStart()
             this.ChangeStatus(1)
         case 1:
+            if this.waittime > 0 {
+                this.waittime--
+            }
+            if this.waittime == 0 {
+                this.waittime = 2
+                this.ChangeStatus(2)
+            }
+        case 2:
+            this.SendQuestion(this.round)
+            this.answertime = int32(tbl.Global.Gameroundtime)
+            this.ChangeStatus(3)
+        case 3:
             if this.answertime > 0 {
                 for k, v := range this.robottick {
                     if this.answertime == v {
@@ -197,17 +211,22 @@ func (this *RoomAgent) DoingGame(){
                 this.answertime--
                 if this.answertime == 0 {
                     this.CalcAnswer()
-                    this.ChangeStatus(2)
+                    this.ChangeStatus(4)
                 }
             }
-        case 2:
+        case 4:
             this.round++
             if this.round >= int32(tbl.Global.Gameroundcount) {
                 this.endgameflag = true
             }else{
-                this.ChangeStatus(0)
+                this.ChangeStatus(1)
             }
     }
+}
+
+func (this *RoomAgent) SendStart() {
+    send := &msg.GW2C_StartGame{}
+    this.SendToAllMsg(send)
 }
 
 func (this *RoomAgent) SendQuestion(round int32){
@@ -219,12 +238,14 @@ func (this *RoomAgent) SendQuestion(round int32){
         return
     }
     this.curanswer = qconfig.Answer
-    send := &msg.GW2C_QuestionInfo{Txt : pb.String(qconfig.Question), Round : pb.Int32(round+1), Time : pb.Int32(int32(tbl.Global.Gameroundtime))}
+    send := &msg.GW2C_QuestionInfo{Txt : pb.String(qconfig.Question), Round : pb.Int32(round+1), Time : pb.Int32(int32(util.CURTIME())+int32(tbl.Global.Gameroundtime)-1)}
     this.SendToAllMsg(send)
     log.Info("房间[%d] 当前轮数[%d] 发送题目[%d][%s], 答案:%d", this.Id(), round+1, qconfig.Id, qconfig.Question, qconfig.Answer)
     for i := 1; i <= int(tbl.Global.Gamerobotnum); i++ {
-        this.robottick[int64(i)] = util.RandBetween(1,5)
+        this.AnswerQuestion(int64(i), util.RandBetween(1,2))
+        this.robottick[int64(i)] = util.RandBetween(2,6)
     }
+
 }
 
 func (this *RoomAgent) ChangeStatus(status int32){
@@ -266,13 +287,18 @@ func (this *RoomAgent) GiveReward(){
 /// @brief 
 // --------------------------------------------------------------------------
 type RoomSvrManager struct {
-	rooms map[int64]*RoomAgent		// 房间服务器
-    roomid  int64                   // 房间id
+	rooms           map[int64]*RoomAgent		// 房间服务器
+    roomid          int64                   // 房间id
+    curidmap        map[int32]int64          
 }
 
 func (this *RoomSvrManager) Init() {
 	this.rooms = make(map[int64]*RoomAgent)
     this.roomid = 1
+    this.curidmap = make(map[int32]int64)
+    for k, _ := range tbl.Global.Gametype {
+        this.curidmap[int32(k+1)] = 1;
+    }
 }
 
 func (this *RoomSvrManager) Num() int {
@@ -312,35 +338,41 @@ func (this *RoomSvrManager) OnClose(uid int64) {
 	log.Info("房间服离线 id=%d 当前总数:%d", uid, this.Num())
 }
 
-func (this *RoomSvrManager) AddNew() *RoomAgent{
-	agent := NewRoomAgent(this.roomid)
-    this.roomid++
+func (this *RoomSvrManager) AddNew(id int64, gtype int32) *RoomAgent{
+	agent := NewRoomAgent(id, gtype)
+    this.curidmap[gtype] = id
 	this.AddRoom(agent)
-	log.Info("注册房间服 id=%d 当前总数:%d", agent.Id(), RoomSvrMgr().Num())
+	log.Info("注册房间 id=%d 当前总数:%d", agent.Id(), RoomSvrMgr().Num())
     return agent
 }
 
-func (this *RoomSvrManager) GetNotFullRoom() *RoomAgent{
-    room := this.FindRoom(this.roomid)
+func (this *RoomSvrManager) GetNotFullRoom(gtype int32) *RoomAgent{
+    gtype = gtype + 1
+    curid := int64(gtype) * 1000000000 + this.curidmap[gtype]
+    room := this.FindRoom(curid)
     if room == nil {
-        return this.AddNew()       
+        return this.AddNew(curid, gtype)       
     } else {
         if room.IsStart() {
-            return this.AddNew()
+            return this.AddNew(curid+1, gtype)
         } else {
             return room
         }
     }
 }
 
-func (this *RoomSvrManager) JoinGame(user *GateUser) {
-    room := this.GetNotFullRoom()
+func (this *RoomSvrManager) JoinGame(user *GateUser, gtype int32) {
+    if int(gtype) > len(tbl.Global.Gametype){
+        return
+    }
+
+    room := this.GetNotFullRoom(gtype)
     if room == nil {
         return
     }
     user.roomid = room.Id()
     member := &msg.RoomMemberInfo{Uid : pb.Int64(int64(user.Id())), Name : pb.String(user.Name()), Answer : pb.Int32(util.RandBetween(1,2))}
-    room.AddMember(member, 1000)
+    room.AddMember(member, int32(tbl.Global.Gametype[gtype]))
     log.Info("玩家[%d] 参加答题游戏, 房间号为:%d", user.Id(), user.roomid)
 }
 

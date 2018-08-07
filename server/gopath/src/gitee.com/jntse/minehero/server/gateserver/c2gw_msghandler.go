@@ -539,14 +539,14 @@ func on_C2GW_ChangeDeliveryAddress(session network.IBaseNetSession, message inte
 }
 
 func on_C2GW_JoinGame(session network.IBaseNetSession, message interface{}) {
-    //tmsg := message.(*msg.C2GW_JoinGame)
+    tmsg := message.(*msg.C2GW_JoinGame)
     user := ExtractSessionUser(session)
     if user == nil {
         log.Fatal(fmt.Sprintf("sid:%d 没有绑定用户", session.Id()))
         session.Close()
         return
     }
-    RoomSvrMgr().JoinGame(user)    
+    RoomSvrMgr().JoinGame(user, tmsg.GetType())    
 }
 
 func on_C2GW_Answer(session network.IBaseNetSession, message interface{}) {

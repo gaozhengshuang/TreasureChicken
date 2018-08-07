@@ -27,9 +27,9 @@
     ],
     "gamewaittime":10,
     "gamemaxmember":10,
-    "gameroundtime":5,
+    "gameroundtime":7,
     "gameroundcount":3,
-    "gamerobotnum":3,
+    "gamerobotnum":5,
 
     "//":"断开连接多久清理玩家,毫秒",
     "disconclean":0,
