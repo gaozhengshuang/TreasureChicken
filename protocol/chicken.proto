@@ -6,6 +6,12 @@ message C2GW_JoinGame
     optional int32  type = 1;               //游戏类型 (0 100金币 1 1000金币 2 3000金币)
 }
 
+//进入成功
+message GW2C_JoinOk
+{
+    optional int32  starttime = 1;
+}
+
 //房间成员信息
 message RoomMemberInfo
 {

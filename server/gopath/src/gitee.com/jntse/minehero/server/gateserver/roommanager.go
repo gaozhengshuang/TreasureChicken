@@ -242,7 +242,7 @@ func (this *RoomAgent) SendQuestion(round int32){
         return
     }
     this.curanswer = qconfig.Answer
-    send := &msg.GW2C_QuestionInfo{Txt : pb.String(qconfig.Question), Round : pb.Int32(round+1), Time : pb.Int32(int32(util.CURTIME())+int32(tbl.Global.Gameroundtime)-1)}
+    send := &msg.GW2C_QuestionInfo{Txt : pb.String(qconfig.Question), Round : pb.Int32(round+1), Time : pb.Int32(int32(util.CURTIME())+int32(tbl.Global.Gameroundtime))}
     this.SendToAllMsg(send)
     log.Info("房间[%d] 当前轮数[%d] 发送题目[%d][%s], 答案:%d", this.Id(), round+1, qconfig.Id, qconfig.Question, qconfig.Answer)
     for i := 1; i <= int(tbl.Global.Gamerobotnum); i++ {
@@ -377,6 +377,11 @@ func (this *RoomSvrManager) JoinGame(user *GateUser, gtype int32) {
     user.roomid = room.Id()
     member := &msg.RoomMemberInfo{Uid : pb.Int64(int64(user.Id())), Name : pb.String(user.Name()), Answer : pb.Int32(util.RandBetween(1,2))}
     room.AddMember(member, int32(tbl.Global.Gametype[gtype]))
+
+    send := &msg.GW2C_JoinOk{}
+    send.Starttime = pb.Int32(room.starttime)
+    user.SendMsg(send) 
+
     log.Info("玩家[%d] 参加答题游戏, 房间号为:%d", user.Id(), user.roomid)
 }
 
