@@ -4,9 +4,8 @@ cc.Class({
 
     properties: {
         playerNode: { default: null, type: cc.Node },
-        answer: { default: 0, type: cc.Integer },
+        playerInfo: { default: null },
         playerSkeleton: { default: null, type: sp.Skeleton },
-        headSkeleton: { default: null, type: sp.Skeleton },
     },
 
     onLoad() {
@@ -14,15 +13,6 @@ cc.Class({
 
     start() {
         this._playRunAction();
-        let head = this.playerSkeleton.findSlot('head');
-        console.log(head);
-        let headHead = this.headSkeleton.findSlot('head');
-        console.log(headHead);
-        cc.loader.load('http://jump.cdn.giantfun.cn/cdn/jumphead/tx%20(18).jpg', function (err, res) {
-            console.log(res);
-            headHead.attachment.region.texture._texture = res;
-            head.setAttachment(headHead.attachment);
-        });
     },
 
     update(dt) {
@@ -30,10 +20,20 @@ cc.Class({
 
     onDestroy() {
     },
-    UpdateAnswer(answer) {
-        this.answer = answer;
+
+    UpdateInfo(info) {
+        this.playerInfo = info;
     },
     _playRunAction() {
         this.playerSkeleton.setAnimation(0, 'run1', true);
+    },
+    _playDieAction(callback) {
+        this.playerSkeleton.setAnimation(0, 'dead1', false);
+        if (Game._.isFunction(callback)) {
+            this.node.runAction(cc.sequence([
+                cc.delayTime(2),
+                cc.callFunc(callback)
+            ]))
+        }
     }
 });

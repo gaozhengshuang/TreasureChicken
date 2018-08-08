@@ -16,9 +16,10 @@ let Game = {
     NetWorkController: require('./Controller/NetWorkController'),
     NotificationController: require('./Controller/NotificationController'),
     ResController: require('./Controller/ResController'),
+    TimeController: require('./Controller/TimeController'),
 
     UserModel: require('./Model/User'),
-    ItemModel: require('./Model/Item'),
+    RoomModel: require('./Model/Room'),
 
     GameInstance: null
 };

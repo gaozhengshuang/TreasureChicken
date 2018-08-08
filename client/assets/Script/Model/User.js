@@ -1,9 +1,9 @@
-import Define from '../Util/Define';
-import Platform from '../Util/Platform';
-import Tools from '../Util/Tools';
-import NetWorkController from '../Controller/NetWorkController';
-import NotificationController from '../Controller/NotificationController';
-import HttpUtil from '../Util/HttpUtil';
+let Define = require('../Util/Define');
+let Platform = require('../Util/Platform');
+let Tools = require('../Util/Tools');
+let NetWorkController = require('../Controller/NetWorkController');
+let NotificationController = require('../Controller/NotificationController');
+let HttpUtil = require('../Util/HttpUtil');
 
 var UserModel = function () {
     this.loginInfo = null;
@@ -12,10 +12,11 @@ var UserModel = function () {
 }
 
 UserModel.prototype.Init = function (cb) {
-    NetWorkController.AddListener('msg.GW2C_SendUserInfo', this.onGW2C_SendUserInfo.bind(this));
-    NetWorkController.AddListener('msg.GW2C_RetLogin', this.onGW2C_RetLogin.bind(this));
-    NetWorkController.AddListener('msg.GW2C_SendUserPlatformMoney', this.onGW2C_SendUserPlatformMoney.bind(this));
-    NetWorkController.AddListener('msg.GW2C_RetDeliveryDiamond', this.onGW2C_RetDeliveryDiamond.bind(this));
+    NetWorkController.AddListener('msg.GW2C_SendUserInfo', this, this.onGW2C_SendUserInfo);
+    NetWorkController.AddListener('msg.GW2C_RetLogin', this, this.onGW2C_RetLogin);
+    NetWorkController.AddListener('msg.GW2C_SendUserPlatformMoney', this, this.onGW2C_SendUserPlatformMoney);
+    NetWorkController.AddListener('msg.GW2C_RetDeliveryDiamond', this, this.onGW2C_RetDeliveryDiamond);
+    NetWorkController.AddListener('msg.GW2C_UpdateGold', this, this.onGW2C_UpdateGold);
 
     Tools.InvokeCallback(cb);
 }
@@ -64,6 +65,9 @@ UserModel.prototype.GetPlayerGoods = function (cb) {
         }
     });
 }
+UserModel.prototype.GetMoney = function () {
+    return Tools.GetValueInObj(this.userInfo, 'base.money') || 0;
+}
 /**
  * 消息处理接口
  */
@@ -76,6 +80,8 @@ UserModel.prototype.onGW2C_RetLogin = function (msgid, data) {
 
 UserModel.prototype.onGW2C_SendUserInfo = function (msgid, data) {
     this.userInfo = data;
+    NotificationController.Emit(Define.EVENT_KEY.CONNECT_TO_GATESERVER);
+    NotificationController.Emit(Define.EVENT_KEY.USERINFO_UPDATEMONEY, Tools.GetValueInObj(this.userInfo, 'base.money') || 0);
 }
 
 UserModel.prototype.onGW2C_SendUserPlatformMoney = function (msgid, data) {
@@ -86,7 +92,13 @@ UserModel.prototype.onGW2C_SendUserPlatformMoney = function (msgid, data) {
 UserModel.prototype.onGW2C_RetDeliveryDiamond = function (msgid, data) {
     let content = '提取钻石:' + data.diamond + '个，提取钻石券:' + data.diamondparts + '个，折算钻石' + (data.total - data.diamond) +
         '个，本次共提取钻石' + data.total + '个';
-    NotificationController.postNotification(Define.EVENT_KEY.TIP_TIPS, { text: content, alive: 5 });
+    NotificationController.Emit(Define.EVENT_KEY.TIP_TIPS, { text: content, alive: 5 });
+}
+
+UserModel.prototype.onGW2C_UpdateGold = function (msgid, data) {
+    let value = data.num || 0;
+    Tools.SetValueInObj(this.userInfo, 'base.money', value)
+    NotificationController.Emit(Define.EVENT_KEY.USERINFO_UPDATEMONEY, value);
 }
 
 module.exports = new UserModel();

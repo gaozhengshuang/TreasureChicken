@@ -1,0 +1,11 @@
+{
+	"Tool": "github.com/davyxu/tabtoy",
+	"Version": "2.8.10",
+	"TShop":[
+		{ "Id": 1, "Itemid": 1001, "Name": "苹果iPhoneX", "Type": 1, "Num": 1, "Rmb": 8488, "Price": 169760, "Send": 0 },
+		{ "Id": 2, "Itemid": 3017, "Name": "【中国黄金】黄金金条10g", "Type": 1, "Num": 1, "Rmb": 2893, "Price": 57860, "Send": 0 },
+		{ "Id": 3, "Itemid": 3018, "Name": "【周大福】十二生肖狗吉星高照足金黄金吊坠2g", "Type": 1, "Num": 1, "Rmb": 840, "Price": 16800, "Send": 0 },
+		{ "Id": 4, "Itemid": 3019, "Name": "南极人纯棉四件套", "Type": 1, "Num": 1, "Rmb": 149, "Price": 2980, "Send": 0 },
+		{ "Id": 5, "Itemid": 3020, "Name": "小米空气净化器", "Type": 1, "Num": 1, "Rmb": 529, "Price": 10580, "Send": 0 },
+		{ "Id": 6, "Itemid": 3021, "Name": "小熊养生壶", "Type": 1, "Num": 1, "Rmb": 129, "Price": 2580, "Send": 0 }
+	]}

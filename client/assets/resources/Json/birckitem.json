@@ -1,0 +1,8 @@
+{
+	"Tool": "github.com/davyxu/tabtoy",
+	"Version": "2.8.10",
+	"TBirckItem":[
+		{ "Id": 1, "Name": "分身球", "Num": 1, "Pro": 0 },
+		{ "Id": 2, "Name": "加长板", "Num": 1, "Pro": 0 },
+		{ "Id": 3, "Name": "元宝", "Num": 1, "Pro": 0 }
+	]}

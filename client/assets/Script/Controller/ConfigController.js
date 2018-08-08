@@ -1,4 +1,4 @@
-import Tools from '../util/Tools';
+let Tools = require('../util/Tools');
 let ConfigController = function () {
     this._configs = {};
 };

@@ -1,0 +1,63 @@
+{
+    "//":"元宝，道具，金卷 生成占总格子比例",
+    "griditem" : {
+        "YuanbaoRate": 25,
+        "ItemRate": 3,
+        "CouponRate": 20,
+        "FreeYuanbaoRate": 35
+    },
+
+    "//":"钻石场",
+    "diamondroom": [
+        { "grade":1, "total":8, "num":1, "pickpro":"0-1;1800-2;3600-3;5400-4;7200-5;9000-7;10800-9;12600-11;14400-13;16200-15;18000-17;19800-20"}
+    ],
+
+    "//":"钻石碎片转钻石",
+    "diamondparts_to_diamond" : 10,
+
+    "//":"钻石转金币",
+    "diamond_to_coins" : 10000,
+
+    "//":"1RMB转金币比例",
+    "rmb_to_conis":1000,
+
+    "//":"1RMB转元宝比例",
+    "rmb_to_yuanbao":10,
+
+    "//":"钻石碎片转金币",
+    "diamondparts_to_coins" : 500,
+
+    "//":"新用户第4步必定中钻石",
+    "must_be_out_diamond_step": 4,
+
+    "//":"返利配置，min,max 返利警戒区间，pick_diamond 默认获取钻石概率，min_consume最低消费",
+    "rebate": {
+        "warning_line_min":67,
+        "warning_line_max":73,
+        "min_consume":30000,
+        "group_gird": {
+            "have_empty_parts_diamond":{ 
+                "empty":20,
+                "parts":62,
+                "diamond":18
+            },
+            "have_parts_diamond":{
+                "parts":83,
+                "diamond":17
+            }
+        }
+    },
+
+    "//":"概率色子点数",
+    "step_diamond_probability": [
+        {"step":1, "pro":0   },
+        {"step":2, "pro":0   },
+        {"step":3, "pro":0   },
+        {"step":4, "pro":10  },
+        {"step":5, "pro":30  },
+        {"step":6, "pro":50  },
+        {"step":7, "pro":70  },
+        {"step":8, "pro":100 }
+    ]
+
+}

@@ -1,0 +1,6 @@
+{
+	"Tool": "github.com/davyxu/tabtoy",
+	"Version": "2.8.10",
+	"TBirckRefresh":[
+		{ "Id": 1, "Min": 0, "Max": 99999999, "Pro": "1-400;2-200;3-200;4-100;5-40;21-6", "Limitnum": 10 }
+	]}

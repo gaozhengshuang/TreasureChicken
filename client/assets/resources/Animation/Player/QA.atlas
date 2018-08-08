@@ -1,47 +1,61 @@
 
 QA.png
-size: 256,64
+size: 256,128
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
 arm01
   rotate: false
-  xy: 106, 42
+  xy: 44, 14
   size: 24, 20
   orig: 24, 20
   offset: 0, 0
   index: -1
 arm02
   rotate: false
-  xy: 132, 42
+  xy: 114, 52
   size: 24, 20
   orig: 24, 20
   offset: 0, 0
   index: -1
 body
   rotate: false
-  xy: 64, 30
+  xy: 2, 2
   size: 40, 32
   orig: 40, 32
   offset: 0, 0
   index: -1
-head03
+face01
   rotate: false
-  xy: 2, 2
-  size: 60, 60
-  orig: 60, 60
+  xy: 114, 74
+  size: 61, 49
+  orig: 61, 49
+  offset: 0, 0
+  index: -1
+face02
+  rotate: false
+  xy: 177, 78
+  size: 49, 45
+  orig: 49, 45
+  offset: 0, 0
+  index: -1
+head
+  rotate: false
+  xy: 2, 36
+  size: 110, 87
+  orig: 110, 87
   offset: 0, 0
   index: -1
 leg01
-  rotate: true
-  xy: 64, 2
+  rotate: false
+  xy: 228, 93
   size: 26, 30
   orig: 26, 30
   offset: 0, 0
   index: -1
 leg02
-  rotate: true
-  xy: 96, 2
+  rotate: false
+  xy: 228, 62
   size: 26, 29
   orig: 26, 29
   offset: 0, 0

@@ -1,11 +1,12 @@
-import _ from 'lodash';
-import moment from 'moment';
+let _ = require('lodash');
+let moment = require('moment');
 
-import Define from '../Util/Define';
-import Tools from '../Util/Tools';
-import ConfigController from './ConfigController';
-import ProtoMsg from '../Util/ProtoMsg';
-import { stringify } from 'querystring';
+let Define = require('../Util/Define');
+let Tools = require('../Util/Tools');
+let ConfigController = require('./ConfigController');
+let NotificationController = require('./NotificationController');
+let ProtoMsg = require('../Util/ProtoMsg');
+let { stringify } = require('querystring');
 
 var NetWorkController = function () {
     this.sock = null;
@@ -84,7 +85,7 @@ NetWorkController.prototype.Close = function (cb) {
     this.sock.close();
 }
 
-NetWorkController.prototype.AddListener = function (name, cb) {
+NetWorkController.prototype.AddListener = function (name, caller, handler) {
     if (this.protoIndexByName[name] == null) {
         return '没找到消息 ' + name;
     }
@@ -94,19 +95,19 @@ NetWorkController.prototype.AddListener = function (name, cb) {
         listenerlist = [];
         this.listeners[id] = listenerlist;
     }
-    listenerlist.push(cb);
+    listenerlist.push({ caller, handler });
     return null;
 }
 
-NetWorkController.prototype.RemoveListener = function (name, cb) {
+NetWorkController.prototype.RemoveListener = function (name, caller, handler) {
     if (this.protoIndexByName[name] == null) {
         return '没找到消息 ' + name;
     }
     let id = this.protoIndexByName[name];
     let listenerlist = this.listeners[id];
     if (listenerlist != null) {
-        _.remove(listenerlist, function (listen) {
-            return cb == listen;
+        _.remove(listenerlist, function (h) {
+            return h.caller == caller && h.handler == handler;
         })
     }
     return null;
@@ -142,8 +143,8 @@ NetWorkController.prototype.onMessage = function (obj) {
             let listenerlist = this.listeners[msgid];
             if (listenerlist != null) {
                 for (let i = 0; i < listenerlist.length; i++) {
-                    let listener = listenerlist[i];
-                    Tools.InvokeCallback(listener, msgid, obj);
+                    let handler = listenerlist[i];
+                    handler.handler.call(handler.caller, msgid, obj);
                 }
             }
         }
@@ -155,20 +156,20 @@ NetWorkController.prototype.onClose = function () {
     this.sock = null;
     Tools.InvokeCallback(this.closeedCallback);
     this.closeedCallback = null;
-    cc.systemEvent.dispatchEvent(new cc.Event.EventCustom(Define.EVENT_KEY.NET_CLOSE));
+    NotificationController.Emit(Define.EVENT_KEY.NET_CLOSE);
 }
 
 NetWorkController.prototype.onOpen = function (info) {
     console.log(new Date() + '[网络消息] socket opend ' + stringify(info));
     Tools.InvokeCallback(this.connectedCallback);
     this.connectedCallback = null;
-    cc.systemEvent.dispatchEvent(new cc.Event.EventCustom(Define.EVENT_KEY.NET_OPEN));
+    NotificationController.Emit(Define.EVENT_KEY.NET_OPEN);
 }
 
 NetWorkController.prototype.onError = function (err) {
     console.log(new Date() + '[网络消息] socket error ' + err);
     this.connectedCallback = null;
-    cc.systemEvent.dispatchEvent(new cc.Event.EventCustom(Define.EVENT_KEY.NET_CLOSE));
+    NotificationController.Emit(Define.EVENT_KEY.NET_CLOSE);
 }
 
 module.exports = new NetWorkController();
