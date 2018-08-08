@@ -13,6 +13,7 @@ var RoomModel = function () {
     this.coldDownTime = 0;
     this.question = '';
     this.answer = 0;
+    this.startTime = 0;
 }
 
 RoomModel.prototype.Init = function (cb) {
@@ -21,6 +22,7 @@ RoomModel.prototype.Init = function (cb) {
     NetWorkController.AddListener('msg.GW2C_QuestionInfo', this, this.onGW2C_QuestionInfo);
     NetWorkController.AddListener('msg.GW2C_AnswerInfo', this, this.onGW2C_AnswerInfo);
     NetWorkController.AddListener('msg.GW2C_GameOver', this, this.onGW2C_GameOver);
+    NetWorkController.AddListener('msg.GW2C_JoinOk', this, this.onGW2C_JoinOk);
     Tools.InvokeCallback(cb);
 }
 
@@ -31,8 +33,10 @@ RoomModel.prototype.RestartGame = function () {
     this.sumreward = 0;
     this.members = [];
     this.round = 0;
+    this.coldDownTime = 0;
     this.question = '';
     this.answer = 0;
+    this.startTime = 0;
 }
 /**
  * 消息处理接口
@@ -78,6 +82,10 @@ RoomModel.prototype.onGW2C_AnswerInfo = function (msgid, data) {
 }
 RoomModel.prototype.onGW2C_GameOver = function (msgid, data) {
     NotificationController.Emit(Define.EVENT_KEY.ROOMINFO_GAMEOVER);
+}
+
+RoomModel.prototype.onGW2C_JoinOk = function (msgid, data) {
+    this.startTime = data.starttime;
 }
 
 module.exports = new RoomModel();

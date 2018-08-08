@@ -8,7 +8,7 @@ cc.Class({
     // LIFE-CYCLE CALLBACKS:
 
     onLoad() {
-
+        Game.NetWorkController.AddListener('msg.GW2C_JoinOk', this, this.onGW2C_JoinOk);
     },
 
     start() {
@@ -20,22 +20,16 @@ cc.Class({
     },
 
     onDestroy() {
-        Game.NotificationController.Off(Game.Define.EVENT_KEY.ROOMINFO_UPDATEINFO, this, this.onUpdateRoomInfo);
+        Game.NetWorkController.RemoveListener('msg.GW2C_JoinOk', this, this.onGW2C_JoinOk);
     },
 
-    onStartGame() {
+    onStartGame(event, customData) {
         Game.RoomModel.RestartGame();
         Game.GameController.RestartGame();
-        Game.NetWorkController.Send('msg.C2GW_JoinGame', { type: 1 });
-        Game.NotificationController.On(Game.Define.EVENT_KEY.ROOMINFO_UPDATEINFO, this, this.onUpdateRoomInfo);
+        Game.NetWorkController.Send('msg.C2GW_JoinGame', { type: parseInt(customData) });
     },
-    onUpdateRoomInfo(newList, updateList) {
-        for (let i = 0; i < newList.length; i++) {
-            let info = newList[i];
-            if (info.uid == Game.UserModel.GetUserId()) {
-                //收到自己的消息了 进入游戏吧
-                cc.director.loadScene("GameScene");
-            }
-        }
+    onGW2C_JoinOk() {
+        //收到自己的消息了 进入游戏吧
+        cc.director.loadScene("GameScene");
     }
 });

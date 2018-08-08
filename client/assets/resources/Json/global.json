@@ -26,10 +26,10 @@
         100,1000,3000
     ],
     "gamewaittime":10,
-    "gamemaxmember":10,
-    "gameroundtime":5,
+    "gamemaxmember":30,
+    "gameroundtime":7,
     "gameroundcount":3,
-    "gamerobotnum":3,
+    "gamerobotnum":10,
 
     "//":"断开连接多久清理玩家,毫秒",
     "disconclean":0,
@@ -87,7 +87,8 @@
         "FinanceQuery":"https://open.yx.tvyouxuan.com/public/finance/Query",
         "DecrCoins":"https://open.yx.tvyouxuan.com/public/finance/DecrCoins",
         "IncrDiamonds":"https://open.yx.tvyouxuan.com/public/finance/IncrDiamonds",
-        "CheckWechatBound":"https://open.yx.tvyouxuan.com/public/user/CheckWechatBound"
+        "CheckWechatBound":"https://open.yx.tvyouxuan.com/public/user/CheckWechatBound",
+        "IncrGolds":"https://open.yx.tvyouxuan.com/public/finance/IncrCoins"
     },
 
     "//":"内网标记",

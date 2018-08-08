@@ -1,6 +1,6 @@
 let Game = require('../../Game');
-const width = 110;
-const height = 140;
+const width = 90;
+const height = 80;
 const gridpreline = 3;
 const randomoffset = 7;
 cc.Class({
@@ -33,7 +33,7 @@ cc.Class({
         });
         if (oldIndex != -1) {
             //已经有这个id了
-            console.log('已经有咯 ' + Game._.get(playerView, 'playerInfo.uid', 1)　+ oldIndex);
+            console.log('已经有咯 ' + Game._.get(playerView, 'playerInfo.uid', 1) + oldIndex);
             return oldIndex;
         }
 
@@ -53,5 +53,8 @@ cc.Class({
                 return i;
             }
         }
+    },
+    ClearGroup() {
+        Game._.fill(this.playerViews, null);
     }
 });

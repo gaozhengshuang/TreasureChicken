@@ -7216,6 +7216,193 @@ $root.msg = (function() {
         return C2GW_JoinGame;
     })();
 
+    msg.GW2C_JoinOk = (function() {
+
+        /**
+         * Properties of a GW2C_JoinOk.
+         * @memberof msg
+         * @interface IGW2C_JoinOk
+         * @property {number|null} [starttime] GW2C_JoinOk starttime
+         */
+
+        /**
+         * Constructs a new GW2C_JoinOk.
+         * @memberof msg
+         * @classdesc Represents a GW2C_JoinOk.
+         * @implements IGW2C_JoinOk
+         * @constructor
+         * @param {msg.IGW2C_JoinOk=} [properties] Properties to set
+         */
+        function GW2C_JoinOk(properties) {
+            if (properties)
+                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * GW2C_JoinOk starttime.
+         * @member {number} starttime
+         * @memberof msg.GW2C_JoinOk
+         * @instance
+         */
+        GW2C_JoinOk.prototype.starttime = 0;
+
+        /**
+         * Creates a new GW2C_JoinOk instance using the specified properties.
+         * @function create
+         * @memberof msg.GW2C_JoinOk
+         * @static
+         * @param {msg.IGW2C_JoinOk=} [properties] Properties to set
+         * @returns {msg.GW2C_JoinOk} GW2C_JoinOk instance
+         */
+        GW2C_JoinOk.create = function create(properties) {
+            return new GW2C_JoinOk(properties);
+        };
+
+        /**
+         * Encodes the specified GW2C_JoinOk message. Does not implicitly {@link msg.GW2C_JoinOk.verify|verify} messages.
+         * @function encode
+         * @memberof msg.GW2C_JoinOk
+         * @static
+         * @param {msg.IGW2C_JoinOk} message GW2C_JoinOk message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        GW2C_JoinOk.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.starttime != null && message.hasOwnProperty("starttime"))
+                writer.uint32(/* id 1, wireType 0 =*/8).int32(message.starttime);
+            return writer;
+        };
+
+        /**
+         * Encodes the specified GW2C_JoinOk message, length delimited. Does not implicitly {@link msg.GW2C_JoinOk.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof msg.GW2C_JoinOk
+         * @static
+         * @param {msg.IGW2C_JoinOk} message GW2C_JoinOk message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        GW2C_JoinOk.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a GW2C_JoinOk message from the specified reader or buffer.
+         * @function decode
+         * @memberof msg.GW2C_JoinOk
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {msg.GW2C_JoinOk} GW2C_JoinOk
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        GW2C_JoinOk.decode = function decode(reader, length) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.msg.GW2C_JoinOk();
+            while (reader.pos < end) {
+                var tag = reader.uint32();
+                switch (tag >>> 3) {
+                case 1:
+                    message.starttime = reader.int32();
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a GW2C_JoinOk message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof msg.GW2C_JoinOk
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {msg.GW2C_JoinOk} GW2C_JoinOk
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        GW2C_JoinOk.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a GW2C_JoinOk message.
+         * @function verify
+         * @memberof msg.GW2C_JoinOk
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        GW2C_JoinOk.verify = function verify(message) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.starttime != null && message.hasOwnProperty("starttime"))
+                if (!$util.isInteger(message.starttime))
+                    return "starttime: integer expected";
+            return null;
+        };
+
+        /**
+         * Creates a GW2C_JoinOk message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof msg.GW2C_JoinOk
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {msg.GW2C_JoinOk} GW2C_JoinOk
+         */
+        GW2C_JoinOk.fromObject = function fromObject(object) {
+            if (object instanceof $root.msg.GW2C_JoinOk)
+                return object;
+            var message = new $root.msg.GW2C_JoinOk();
+            if (object.starttime != null)
+                message.starttime = object.starttime | 0;
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a GW2C_JoinOk message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof msg.GW2C_JoinOk
+         * @static
+         * @param {msg.GW2C_JoinOk} message GW2C_JoinOk
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        GW2C_JoinOk.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            var object = {};
+            if (options.defaults)
+                object.starttime = 0;
+            if (message.starttime != null && message.hasOwnProperty("starttime"))
+                object.starttime = message.starttime;
+            return object;
+        };
+
+        /**
+         * Converts this GW2C_JoinOk to JSON.
+         * @function toJSON
+         * @memberof msg.GW2C_JoinOk
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        GW2C_JoinOk.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        return GW2C_JoinOk;
+    })();
+
     msg.RoomMemberInfo = (function() {
 
         /**
@@ -11081,7 +11268,9 @@ $root.msg = (function() {
          * @memberof msg
          * @interface IC2L_ReqLogin
          * @property {string|null} [account] C2L_ReqLogin account
-         * @property {string|null} [passwd] C2L_ReqLogin passwd
+         * @property {string|null} [nickname] C2L_ReqLogin nickname
+         * @property {string|null} [face] C2L_ReqLogin face
+         * @property {string|null} [token] C2L_ReqLogin token
          */
 
         /**
@@ -11108,12 +11297,28 @@ $root.msg = (function() {
         C2L_ReqLogin.prototype.account = "";
 
         /**
-         * C2L_ReqLogin passwd.
-         * @member {string} passwd
+         * C2L_ReqLogin nickname.
+         * @member {string} nickname
          * @memberof msg.C2L_ReqLogin
          * @instance
          */
-        C2L_ReqLogin.prototype.passwd = "";
+        C2L_ReqLogin.prototype.nickname = "";
+
+        /**
+         * C2L_ReqLogin face.
+         * @member {string} face
+         * @memberof msg.C2L_ReqLogin
+         * @instance
+         */
+        C2L_ReqLogin.prototype.face = "";
+
+        /**
+         * C2L_ReqLogin token.
+         * @member {string} token
+         * @memberof msg.C2L_ReqLogin
+         * @instance
+         */
+        C2L_ReqLogin.prototype.token = "";
 
         /**
          * Creates a new C2L_ReqLogin instance using the specified properties.
@@ -11141,8 +11346,12 @@ $root.msg = (function() {
                 writer = $Writer.create();
             if (message.account != null && message.hasOwnProperty("account"))
                 writer.uint32(/* id 1, wireType 2 =*/10).string(message.account);
-            if (message.passwd != null && message.hasOwnProperty("passwd"))
-                writer.uint32(/* id 2, wireType 2 =*/18).string(message.passwd);
+            if (message.nickname != null && message.hasOwnProperty("nickname"))
+                writer.uint32(/* id 2, wireType 2 =*/18).string(message.nickname);
+            if (message.face != null && message.hasOwnProperty("face"))
+                writer.uint32(/* id 3, wireType 2 =*/26).string(message.face);
+            if (message.token != null && message.hasOwnProperty("token"))
+                writer.uint32(/* id 4, wireType 2 =*/34).string(message.token);
             return writer;
         };
 
@@ -11181,7 +11390,13 @@ $root.msg = (function() {
                     message.account = reader.string();
                     break;
                 case 2:
-                    message.passwd = reader.string();
+                    message.nickname = reader.string();
+                    break;
+                case 3:
+                    message.face = reader.string();
+                    break;
+                case 4:
+                    message.token = reader.string();
                     break;
                 default:
                     reader.skipType(tag & 7);
@@ -11221,9 +11436,15 @@ $root.msg = (function() {
             if (message.account != null && message.hasOwnProperty("account"))
                 if (!$util.isString(message.account))
                     return "account: string expected";
-            if (message.passwd != null && message.hasOwnProperty("passwd"))
-                if (!$util.isString(message.passwd))
-                    return "passwd: string expected";
+            if (message.nickname != null && message.hasOwnProperty("nickname"))
+                if (!$util.isString(message.nickname))
+                    return "nickname: string expected";
+            if (message.face != null && message.hasOwnProperty("face"))
+                if (!$util.isString(message.face))
+                    return "face: string expected";
+            if (message.token != null && message.hasOwnProperty("token"))
+                if (!$util.isString(message.token))
+                    return "token: string expected";
             return null;
         };
 
@@ -11241,8 +11462,12 @@ $root.msg = (function() {
             var message = new $root.msg.C2L_ReqLogin();
             if (object.account != null)
                 message.account = String(object.account);
-            if (object.passwd != null)
-                message.passwd = String(object.passwd);
+            if (object.nickname != null)
+                message.nickname = String(object.nickname);
+            if (object.face != null)
+                message.face = String(object.face);
+            if (object.token != null)
+                message.token = String(object.token);
             return message;
         };
 
@@ -11261,12 +11486,18 @@ $root.msg = (function() {
             var object = {};
             if (options.defaults) {
                 object.account = "";
-                object.passwd = "";
+                object.nickname = "";
+                object.face = "";
+                object.token = "";
             }
             if (message.account != null && message.hasOwnProperty("account"))
                 object.account = message.account;
-            if (message.passwd != null && message.hasOwnProperty("passwd"))
-                object.passwd = message.passwd;
+            if (message.nickname != null && message.hasOwnProperty("nickname"))
+                object.nickname = message.nickname;
+            if (message.face != null && message.hasOwnProperty("face"))
+                object.face = message.face;
+            if (message.token != null && message.hasOwnProperty("token"))
+                object.token = message.token;
             return object;
         };
 
@@ -11282,238 +11513,6 @@ $root.msg = (function() {
         };
 
         return C2L_ReqLogin;
-    })();
-
-    msg.C2L_ReqLoginWechat = (function() {
-
-        /**
-         * Properties of a C2L_ReqLoginWechat.
-         * @memberof msg
-         * @interface IC2L_ReqLoginWechat
-         * @property {string|null} [openid] C2L_ReqLoginWechat openid
-         * @property {string|null} [face] C2L_ReqLoginWechat face
-         * @property {string|null} [nickname] C2L_ReqLoginWechat nickname
-         */
-
-        /**
-         * Constructs a new C2L_ReqLoginWechat.
-         * @memberof msg
-         * @classdesc Represents a C2L_ReqLoginWechat.
-         * @implements IC2L_ReqLoginWechat
-         * @constructor
-         * @param {msg.IC2L_ReqLoginWechat=} [properties] Properties to set
-         */
-        function C2L_ReqLoginWechat(properties) {
-            if (properties)
-                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                    if (properties[keys[i]] != null)
-                        this[keys[i]] = properties[keys[i]];
-        }
-
-        /**
-         * C2L_ReqLoginWechat openid.
-         * @member {string} openid
-         * @memberof msg.C2L_ReqLoginWechat
-         * @instance
-         */
-        C2L_ReqLoginWechat.prototype.openid = "";
-
-        /**
-         * C2L_ReqLoginWechat face.
-         * @member {string} face
-         * @memberof msg.C2L_ReqLoginWechat
-         * @instance
-         */
-        C2L_ReqLoginWechat.prototype.face = "";
-
-        /**
-         * C2L_ReqLoginWechat nickname.
-         * @member {string} nickname
-         * @memberof msg.C2L_ReqLoginWechat
-         * @instance
-         */
-        C2L_ReqLoginWechat.prototype.nickname = "";
-
-        /**
-         * Creates a new C2L_ReqLoginWechat instance using the specified properties.
-         * @function create
-         * @memberof msg.C2L_ReqLoginWechat
-         * @static
-         * @param {msg.IC2L_ReqLoginWechat=} [properties] Properties to set
-         * @returns {msg.C2L_ReqLoginWechat} C2L_ReqLoginWechat instance
-         */
-        C2L_ReqLoginWechat.create = function create(properties) {
-            return new C2L_ReqLoginWechat(properties);
-        };
-
-        /**
-         * Encodes the specified C2L_ReqLoginWechat message. Does not implicitly {@link msg.C2L_ReqLoginWechat.verify|verify} messages.
-         * @function encode
-         * @memberof msg.C2L_ReqLoginWechat
-         * @static
-         * @param {msg.IC2L_ReqLoginWechat} message C2L_ReqLoginWechat message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        C2L_ReqLoginWechat.encode = function encode(message, writer) {
-            if (!writer)
-                writer = $Writer.create();
-            if (message.openid != null && message.hasOwnProperty("openid"))
-                writer.uint32(/* id 1, wireType 2 =*/10).string(message.openid);
-            if (message.face != null && message.hasOwnProperty("face"))
-                writer.uint32(/* id 2, wireType 2 =*/18).string(message.face);
-            if (message.nickname != null && message.hasOwnProperty("nickname"))
-                writer.uint32(/* id 3, wireType 2 =*/26).string(message.nickname);
-            return writer;
-        };
-
-        /**
-         * Encodes the specified C2L_ReqLoginWechat message, length delimited. Does not implicitly {@link msg.C2L_ReqLoginWechat.verify|verify} messages.
-         * @function encodeDelimited
-         * @memberof msg.C2L_ReqLoginWechat
-         * @static
-         * @param {msg.IC2L_ReqLoginWechat} message C2L_ReqLoginWechat message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        C2L_ReqLoginWechat.encodeDelimited = function encodeDelimited(message, writer) {
-            return this.encode(message, writer).ldelim();
-        };
-
-        /**
-         * Decodes a C2L_ReqLoginWechat message from the specified reader or buffer.
-         * @function decode
-         * @memberof msg.C2L_ReqLoginWechat
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @param {number} [length] Message length if known beforehand
-         * @returns {msg.C2L_ReqLoginWechat} C2L_ReqLoginWechat
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        C2L_ReqLoginWechat.decode = function decode(reader, length) {
-            if (!(reader instanceof $Reader))
-                reader = $Reader.create(reader);
-            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.msg.C2L_ReqLoginWechat();
-            while (reader.pos < end) {
-                var tag = reader.uint32();
-                switch (tag >>> 3) {
-                case 1:
-                    message.openid = reader.string();
-                    break;
-                case 2:
-                    message.face = reader.string();
-                    break;
-                case 3:
-                    message.nickname = reader.string();
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
-                }
-            }
-            return message;
-        };
-
-        /**
-         * Decodes a C2L_ReqLoginWechat message from the specified reader or buffer, length delimited.
-         * @function decodeDelimited
-         * @memberof msg.C2L_ReqLoginWechat
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {msg.C2L_ReqLoginWechat} C2L_ReqLoginWechat
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        C2L_ReqLoginWechat.decodeDelimited = function decodeDelimited(reader) {
-            if (!(reader instanceof $Reader))
-                reader = new $Reader(reader);
-            return this.decode(reader, reader.uint32());
-        };
-
-        /**
-         * Verifies a C2L_ReqLoginWechat message.
-         * @function verify
-         * @memberof msg.C2L_ReqLoginWechat
-         * @static
-         * @param {Object.<string,*>} message Plain object to verify
-         * @returns {string|null} `null` if valid, otherwise the reason why it is not
-         */
-        C2L_ReqLoginWechat.verify = function verify(message) {
-            if (typeof message !== "object" || message === null)
-                return "object expected";
-            if (message.openid != null && message.hasOwnProperty("openid"))
-                if (!$util.isString(message.openid))
-                    return "openid: string expected";
-            if (message.face != null && message.hasOwnProperty("face"))
-                if (!$util.isString(message.face))
-                    return "face: string expected";
-            if (message.nickname != null && message.hasOwnProperty("nickname"))
-                if (!$util.isString(message.nickname))
-                    return "nickname: string expected";
-            return null;
-        };
-
-        /**
-         * Creates a C2L_ReqLoginWechat message from a plain object. Also converts values to their respective internal types.
-         * @function fromObject
-         * @memberof msg.C2L_ReqLoginWechat
-         * @static
-         * @param {Object.<string,*>} object Plain object
-         * @returns {msg.C2L_ReqLoginWechat} C2L_ReqLoginWechat
-         */
-        C2L_ReqLoginWechat.fromObject = function fromObject(object) {
-            if (object instanceof $root.msg.C2L_ReqLoginWechat)
-                return object;
-            var message = new $root.msg.C2L_ReqLoginWechat();
-            if (object.openid != null)
-                message.openid = String(object.openid);
-            if (object.face != null)
-                message.face = String(object.face);
-            if (object.nickname != null)
-                message.nickname = String(object.nickname);
-            return message;
-        };
-
-        /**
-         * Creates a plain object from a C2L_ReqLoginWechat message. Also converts values to other types if specified.
-         * @function toObject
-         * @memberof msg.C2L_ReqLoginWechat
-         * @static
-         * @param {msg.C2L_ReqLoginWechat} message C2L_ReqLoginWechat
-         * @param {$protobuf.IConversionOptions} [options] Conversion options
-         * @returns {Object.<string,*>} Plain object
-         */
-        C2L_ReqLoginWechat.toObject = function toObject(message, options) {
-            if (!options)
-                options = {};
-            var object = {};
-            if (options.defaults) {
-                object.openid = "";
-                object.face = "";
-                object.nickname = "";
-            }
-            if (message.openid != null && message.hasOwnProperty("openid"))
-                object.openid = message.openid;
-            if (message.face != null && message.hasOwnProperty("face"))
-                object.face = message.face;
-            if (message.nickname != null && message.hasOwnProperty("nickname"))
-                object.nickname = message.nickname;
-            return object;
-        };
-
-        /**
-         * Converts this C2L_ReqLoginWechat to JSON.
-         * @function toJSON
-         * @memberof msg.C2L_ReqLoginWechat
-         * @instance
-         * @returns {Object.<string,*>} JSON object
-         */
-        C2L_ReqLoginWechat.prototype.toJSON = function toJSON() {
-            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-        };
-
-        return C2L_ReqLoginWechat;
     })();
 
     msg.L2C_RetLogin = (function() {
@@ -11775,204 +11774,16 @@ $root.msg = (function() {
         return L2C_RetLogin;
     })();
 
-    msg.C2L_ReqRegistAuthCode = (function() {
-
-        /**
-         * Properties of a C2L_ReqRegistAuthCode.
-         * @memberof msg
-         * @interface IC2L_ReqRegistAuthCode
-         * @property {string|null} [phone] C2L_ReqRegistAuthCode phone
-         */
-
-        /**
-         * Constructs a new C2L_ReqRegistAuthCode.
-         * @memberof msg
-         * @classdesc Represents a C2L_ReqRegistAuthCode.
-         * @implements IC2L_ReqRegistAuthCode
-         * @constructor
-         * @param {msg.IC2L_ReqRegistAuthCode=} [properties] Properties to set
-         */
-        function C2L_ReqRegistAuthCode(properties) {
-            if (properties)
-                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                    if (properties[keys[i]] != null)
-                        this[keys[i]] = properties[keys[i]];
-        }
-
-        /**
-         * C2L_ReqRegistAuthCode phone.
-         * @member {string} phone
-         * @memberof msg.C2L_ReqRegistAuthCode
-         * @instance
-         */
-        C2L_ReqRegistAuthCode.prototype.phone = "";
-
-        /**
-         * Creates a new C2L_ReqRegistAuthCode instance using the specified properties.
-         * @function create
-         * @memberof msg.C2L_ReqRegistAuthCode
-         * @static
-         * @param {msg.IC2L_ReqRegistAuthCode=} [properties] Properties to set
-         * @returns {msg.C2L_ReqRegistAuthCode} C2L_ReqRegistAuthCode instance
-         */
-        C2L_ReqRegistAuthCode.create = function create(properties) {
-            return new C2L_ReqRegistAuthCode(properties);
-        };
-
-        /**
-         * Encodes the specified C2L_ReqRegistAuthCode message. Does not implicitly {@link msg.C2L_ReqRegistAuthCode.verify|verify} messages.
-         * @function encode
-         * @memberof msg.C2L_ReqRegistAuthCode
-         * @static
-         * @param {msg.IC2L_ReqRegistAuthCode} message C2L_ReqRegistAuthCode message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        C2L_ReqRegistAuthCode.encode = function encode(message, writer) {
-            if (!writer)
-                writer = $Writer.create();
-            if (message.phone != null && message.hasOwnProperty("phone"))
-                writer.uint32(/* id 1, wireType 2 =*/10).string(message.phone);
-            return writer;
-        };
-
-        /**
-         * Encodes the specified C2L_ReqRegistAuthCode message, length delimited. Does not implicitly {@link msg.C2L_ReqRegistAuthCode.verify|verify} messages.
-         * @function encodeDelimited
-         * @memberof msg.C2L_ReqRegistAuthCode
-         * @static
-         * @param {msg.IC2L_ReqRegistAuthCode} message C2L_ReqRegistAuthCode message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        C2L_ReqRegistAuthCode.encodeDelimited = function encodeDelimited(message, writer) {
-            return this.encode(message, writer).ldelim();
-        };
-
-        /**
-         * Decodes a C2L_ReqRegistAuthCode message from the specified reader or buffer.
-         * @function decode
-         * @memberof msg.C2L_ReqRegistAuthCode
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @param {number} [length] Message length if known beforehand
-         * @returns {msg.C2L_ReqRegistAuthCode} C2L_ReqRegistAuthCode
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        C2L_ReqRegistAuthCode.decode = function decode(reader, length) {
-            if (!(reader instanceof $Reader))
-                reader = $Reader.create(reader);
-            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.msg.C2L_ReqRegistAuthCode();
-            while (reader.pos < end) {
-                var tag = reader.uint32();
-                switch (tag >>> 3) {
-                case 1:
-                    message.phone = reader.string();
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
-                }
-            }
-            return message;
-        };
-
-        /**
-         * Decodes a C2L_ReqRegistAuthCode message from the specified reader or buffer, length delimited.
-         * @function decodeDelimited
-         * @memberof msg.C2L_ReqRegistAuthCode
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {msg.C2L_ReqRegistAuthCode} C2L_ReqRegistAuthCode
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        C2L_ReqRegistAuthCode.decodeDelimited = function decodeDelimited(reader) {
-            if (!(reader instanceof $Reader))
-                reader = new $Reader(reader);
-            return this.decode(reader, reader.uint32());
-        };
-
-        /**
-         * Verifies a C2L_ReqRegistAuthCode message.
-         * @function verify
-         * @memberof msg.C2L_ReqRegistAuthCode
-         * @static
-         * @param {Object.<string,*>} message Plain object to verify
-         * @returns {string|null} `null` if valid, otherwise the reason why it is not
-         */
-        C2L_ReqRegistAuthCode.verify = function verify(message) {
-            if (typeof message !== "object" || message === null)
-                return "object expected";
-            if (message.phone != null && message.hasOwnProperty("phone"))
-                if (!$util.isString(message.phone))
-                    return "phone: string expected";
-            return null;
-        };
-
-        /**
-         * Creates a C2L_ReqRegistAuthCode message from a plain object. Also converts values to their respective internal types.
-         * @function fromObject
-         * @memberof msg.C2L_ReqRegistAuthCode
-         * @static
-         * @param {Object.<string,*>} object Plain object
-         * @returns {msg.C2L_ReqRegistAuthCode} C2L_ReqRegistAuthCode
-         */
-        C2L_ReqRegistAuthCode.fromObject = function fromObject(object) {
-            if (object instanceof $root.msg.C2L_ReqRegistAuthCode)
-                return object;
-            var message = new $root.msg.C2L_ReqRegistAuthCode();
-            if (object.phone != null)
-                message.phone = String(object.phone);
-            return message;
-        };
-
-        /**
-         * Creates a plain object from a C2L_ReqRegistAuthCode message. Also converts values to other types if specified.
-         * @function toObject
-         * @memberof msg.C2L_ReqRegistAuthCode
-         * @static
-         * @param {msg.C2L_ReqRegistAuthCode} message C2L_ReqRegistAuthCode
-         * @param {$protobuf.IConversionOptions} [options] Conversion options
-         * @returns {Object.<string,*>} Plain object
-         */
-        C2L_ReqRegistAuthCode.toObject = function toObject(message, options) {
-            if (!options)
-                options = {};
-            var object = {};
-            if (options.defaults)
-                object.phone = "";
-            if (message.phone != null && message.hasOwnProperty("phone"))
-                object.phone = message.phone;
-            return object;
-        };
-
-        /**
-         * Converts this C2L_ReqRegistAuthCode to JSON.
-         * @function toJSON
-         * @memberof msg.C2L_ReqRegistAuthCode
-         * @instance
-         * @returns {Object.<string,*>} JSON object
-         */
-        C2L_ReqRegistAuthCode.prototype.toJSON = function toJSON() {
-            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-        };
-
-        return C2L_ReqRegistAuthCode;
-    })();
-
     msg.C2L_ReqRegistAccount = (function() {
 
         /**
          * Properties of a C2L_ReqRegistAccount.
          * @memberof msg
          * @interface IC2L_ReqRegistAccount
-         * @property {string|null} [phone] C2L_ReqRegistAccount phone
+         * @property {string|null} [account] C2L_ReqRegistAccount account
          * @property {string|null} [passwd] C2L_ReqRegistAccount passwd
-         * @property {string|null} [authcode] C2L_ReqRegistAccount authcode
-         * @property {string|null} [invitationcode] C2L_ReqRegistAccount invitationcode
-         * @property {string|null} [nickname] C2L_ReqRegistAccount nickname
+         * @property {string|null} [name] C2L_ReqRegistAccount name
+         * @property {string|null} [face] C2L_ReqRegistAccount face
          */
 
         /**
@@ -11991,12 +11802,12 @@ $root.msg = (function() {
         }
 
         /**
-         * C2L_ReqRegistAccount phone.
-         * @member {string} phone
+         * C2L_ReqRegistAccount account.
+         * @member {string} account
          * @memberof msg.C2L_ReqRegistAccount
          * @instance
          */
-        C2L_ReqRegistAccount.prototype.phone = "";
+        C2L_ReqRegistAccount.prototype.account = "";
 
         /**
          * C2L_ReqRegistAccount passwd.
@@ -12007,28 +11818,20 @@ $root.msg = (function() {
         C2L_ReqRegistAccount.prototype.passwd = "";
 
         /**
-         * C2L_ReqRegistAccount authcode.
-         * @member {string} authcode
+         * C2L_ReqRegistAccount name.
+         * @member {string} name
          * @memberof msg.C2L_ReqRegistAccount
          * @instance
          */
-        C2L_ReqRegistAccount.prototype.authcode = "";
+        C2L_ReqRegistAccount.prototype.name = "";
 
         /**
-         * C2L_ReqRegistAccount invitationcode.
-         * @member {string} invitationcode
+         * C2L_ReqRegistAccount face.
+         * @member {string} face
          * @memberof msg.C2L_ReqRegistAccount
          * @instance
          */
-        C2L_ReqRegistAccount.prototype.invitationcode = "";
-
-        /**
-         * C2L_ReqRegistAccount nickname.
-         * @member {string} nickname
-         * @memberof msg.C2L_ReqRegistAccount
-         * @instance
-         */
-        C2L_ReqRegistAccount.prototype.nickname = "";
+        C2L_ReqRegistAccount.prototype.face = "";
 
         /**
          * Creates a new C2L_ReqRegistAccount instance using the specified properties.
@@ -12054,16 +11857,14 @@ $root.msg = (function() {
         C2L_ReqRegistAccount.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.phone != null && message.hasOwnProperty("phone"))
-                writer.uint32(/* id 1, wireType 2 =*/10).string(message.phone);
+            if (message.account != null && message.hasOwnProperty("account"))
+                writer.uint32(/* id 1, wireType 2 =*/10).string(message.account);
             if (message.passwd != null && message.hasOwnProperty("passwd"))
                 writer.uint32(/* id 2, wireType 2 =*/18).string(message.passwd);
-            if (message.authcode != null && message.hasOwnProperty("authcode"))
-                writer.uint32(/* id 3, wireType 2 =*/26).string(message.authcode);
-            if (message.invitationcode != null && message.hasOwnProperty("invitationcode"))
-                writer.uint32(/* id 4, wireType 2 =*/34).string(message.invitationcode);
-            if (message.nickname != null && message.hasOwnProperty("nickname"))
-                writer.uint32(/* id 5, wireType 2 =*/42).string(message.nickname);
+            if (message.name != null && message.hasOwnProperty("name"))
+                writer.uint32(/* id 3, wireType 2 =*/26).string(message.name);
+            if (message.face != null && message.hasOwnProperty("face"))
+                writer.uint32(/* id 4, wireType 2 =*/34).string(message.face);
             return writer;
         };
 
@@ -12099,19 +11900,16 @@ $root.msg = (function() {
                 var tag = reader.uint32();
                 switch (tag >>> 3) {
                 case 1:
-                    message.phone = reader.string();
+                    message.account = reader.string();
                     break;
                 case 2:
                     message.passwd = reader.string();
                     break;
                 case 3:
-                    message.authcode = reader.string();
+                    message.name = reader.string();
                     break;
                 case 4:
-                    message.invitationcode = reader.string();
-                    break;
-                case 5:
-                    message.nickname = reader.string();
+                    message.face = reader.string();
                     break;
                 default:
                     reader.skipType(tag & 7);
@@ -12148,21 +11946,18 @@ $root.msg = (function() {
         C2L_ReqRegistAccount.verify = function verify(message) {
             if (typeof message !== "object" || message === null)
                 return "object expected";
-            if (message.phone != null && message.hasOwnProperty("phone"))
-                if (!$util.isString(message.phone))
-                    return "phone: string expected";
+            if (message.account != null && message.hasOwnProperty("account"))
+                if (!$util.isString(message.account))
+                    return "account: string expected";
             if (message.passwd != null && message.hasOwnProperty("passwd"))
                 if (!$util.isString(message.passwd))
                     return "passwd: string expected";
-            if (message.authcode != null && message.hasOwnProperty("authcode"))
-                if (!$util.isString(message.authcode))
-                    return "authcode: string expected";
-            if (message.invitationcode != null && message.hasOwnProperty("invitationcode"))
-                if (!$util.isString(message.invitationcode))
-                    return "invitationcode: string expected";
-            if (message.nickname != null && message.hasOwnProperty("nickname"))
-                if (!$util.isString(message.nickname))
-                    return "nickname: string expected";
+            if (message.name != null && message.hasOwnProperty("name"))
+                if (!$util.isString(message.name))
+                    return "name: string expected";
+            if (message.face != null && message.hasOwnProperty("face"))
+                if (!$util.isString(message.face))
+                    return "face: string expected";
             return null;
         };
 
@@ -12178,16 +11973,14 @@ $root.msg = (function() {
             if (object instanceof $root.msg.C2L_ReqRegistAccount)
                 return object;
             var message = new $root.msg.C2L_ReqRegistAccount();
-            if (object.phone != null)
-                message.phone = String(object.phone);
+            if (object.account != null)
+                message.account = String(object.account);
             if (object.passwd != null)
                 message.passwd = String(object.passwd);
-            if (object.authcode != null)
-                message.authcode = String(object.authcode);
-            if (object.invitationcode != null)
-                message.invitationcode = String(object.invitationcode);
-            if (object.nickname != null)
-                message.nickname = String(object.nickname);
+            if (object.name != null)
+                message.name = String(object.name);
+            if (object.face != null)
+                message.face = String(object.face);
             return message;
         };
 
@@ -12205,22 +11998,19 @@ $root.msg = (function() {
                 options = {};
             var object = {};
             if (options.defaults) {
-                object.phone = "";
+                object.account = "";
                 object.passwd = "";
-                object.authcode = "";
-                object.invitationcode = "";
-                object.nickname = "";
+                object.name = "";
+                object.face = "";
             }
-            if (message.phone != null && message.hasOwnProperty("phone"))
-                object.phone = message.phone;
+            if (message.account != null && message.hasOwnProperty("account"))
+                object.account = message.account;
             if (message.passwd != null && message.hasOwnProperty("passwd"))
                 object.passwd = message.passwd;
-            if (message.authcode != null && message.hasOwnProperty("authcode"))
-                object.authcode = message.authcode;
-            if (message.invitationcode != null && message.hasOwnProperty("invitationcode"))
-                object.invitationcode = message.invitationcode;
-            if (message.nickname != null && message.hasOwnProperty("nickname"))
-                object.nickname = message.nickname;
+            if (message.name != null && message.hasOwnProperty("name"))
+                object.name = message.name;
+            if (message.face != null && message.hasOwnProperty("face"))
+                object.face = message.face;
             return object;
         };
 
@@ -12244,6 +12034,7 @@ $root.msg = (function() {
          * Properties of a L2C_RetRegistAccount.
          * @memberof msg
          * @interface IL2C_RetRegistAccount
+         * @property {string|null} [account] L2C_RetRegistAccount account
          * @property {string|null} [errcode] L2C_RetRegistAccount errcode
          */
 
@@ -12261,6 +12052,14 @@ $root.msg = (function() {
                     if (properties[keys[i]] != null)
                         this[keys[i]] = properties[keys[i]];
         }
+
+        /**
+         * L2C_RetRegistAccount account.
+         * @member {string} account
+         * @memberof msg.L2C_RetRegistAccount
+         * @instance
+         */
+        L2C_RetRegistAccount.prototype.account = "";
 
         /**
          * L2C_RetRegistAccount errcode.
@@ -12294,8 +12093,10 @@ $root.msg = (function() {
         L2C_RetRegistAccount.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
+            if (message.account != null && message.hasOwnProperty("account"))
+                writer.uint32(/* id 1, wireType 2 =*/10).string(message.account);
             if (message.errcode != null && message.hasOwnProperty("errcode"))
-                writer.uint32(/* id 1, wireType 2 =*/10).string(message.errcode);
+                writer.uint32(/* id 2, wireType 2 =*/18).string(message.errcode);
             return writer;
         };
 
@@ -12331,6 +12132,9 @@ $root.msg = (function() {
                 var tag = reader.uint32();
                 switch (tag >>> 3) {
                 case 1:
+                    message.account = reader.string();
+                    break;
+                case 2:
                     message.errcode = reader.string();
                     break;
                 default:
@@ -12368,6 +12172,9 @@ $root.msg = (function() {
         L2C_RetRegistAccount.verify = function verify(message) {
             if (typeof message !== "object" || message === null)
                 return "object expected";
+            if (message.account != null && message.hasOwnProperty("account"))
+                if (!$util.isString(message.account))
+                    return "account: string expected";
             if (message.errcode != null && message.hasOwnProperty("errcode"))
                 if (!$util.isString(message.errcode))
                     return "errcode: string expected";
@@ -12386,6 +12193,8 @@ $root.msg = (function() {
             if (object instanceof $root.msg.L2C_RetRegistAccount)
                 return object;
             var message = new $root.msg.L2C_RetRegistAccount();
+            if (object.account != null)
+                message.account = String(object.account);
             if (object.errcode != null)
                 message.errcode = String(object.errcode);
             return message;
@@ -12404,8 +12213,12 @@ $root.msg = (function() {
             if (!options)
                 options = {};
             var object = {};
-            if (options.defaults)
+            if (options.defaults) {
+                object.account = "";
                 object.errcode = "";
+            }
+            if (message.account != null && message.hasOwnProperty("account"))
+                object.account = message.account;
             if (message.errcode != null && message.hasOwnProperty("errcode"))
                 object.errcode = message.errcode;
             return object;

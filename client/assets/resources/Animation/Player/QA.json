@@ -1,5 +1,5 @@
 {
-"skeleton": { "hash": "p2qp4ii969y0E3lGQUajvydC29c", "spine": "3.6.50", "width": 110, "height": 124.99, "images": "./images/" },
+"skeleton": { "hash": "TSbZak2j9B9E3vpHVN0HJyQa7cw", "spine": "3.6.50", "width": 110, "height": 124.99, "images": "./images/" },
 "bones": [
 	{ "name": "root" },
 	{ "name": "move", "parent": "root" },
@@ -17,8 +17,7 @@
 	{ "name": "leg02", "bone": "leg_R", "attachment": "leg02" },
 	{ "name": "leg01", "bone": "leg_L", "attachment": "leg01" },
 	{ "name": "body", "bone": "body", "attachment": "body" },
-	{ "name": "head", "bone": "head", "attachment": "head" },
-	{ "name": "face01", "bone": "head", "attachment": "face02" }
+	{ "name": "head", "bone": "head", "attachment": "head02" }
 ],
 "skins": {
 	"default": {
@@ -58,13 +57,6 @@
 				"height": 32
 			}
 		},
-		"face01": {
-			"face01": { "x": 22.38, "y": -4.17, "rotation": -90.14, "width": 61, "height": 49 },
-			"face02": { "x": 22.37, "y": -5.17, "rotation": -90.14, "width": 49, "height": 45 }
-		},
-		"head": {
-			"head": { "x": 38.39, "y": 2.29, "rotation": -90.14, "width": 110, "height": 87 }
-		},
 		"leg01": {
 			"leg01": {
 				"type": "mesh",
@@ -89,17 +81,39 @@
 				"height": 29
 			}
 		}
+	},
+	"37fen": {
+		"head": {
+			"head01": { "name": "head11", "x": 40.12, "y": -0.86, "rotation": -90.14, "width": 86, "height": 97 },
+			"head02": { "name": "head12", "x": 39.93, "y": -0.78, "rotation": -90.14, "width": 86, "height": 97 }
+		}
+	},
+	"pingtou": {
+		"head": {
+			"head01": { "name": "head21", "x": 28.37, "y": 2.11, "rotation": -90.14, "width": 86, "height": 74 },
+			"head02": { "name": "head22", "x": 28.37, "y": 2.42, "rotation": -90.14, "width": 86, "height": 74 }
+		}
+	},
+	"qiliuhai": {
+		"head": {
+			"head01": { "x": 38.39, "y": 2.29, "rotation": -90.14, "width": 110, "height": 87 },
+			"head02": { "x": 38.39, "y": 2.29, "rotation": -90.14, "width": 110, "height": 87 }
+		}
 	}
 },
 "animations": {
 	"dead1": {
 		"slots": {
-			"face01": {
+			"head": {
 				"attachment": [
-					{ "time": 0, "name": "face01" },
-					{ "time": 0.5333, "name": "face01" },
-					{ "time": 1.0667, "name": "face01" },
-					{ "time": 1.6, "name": "face01" }
+					{ "time": 0, "name": "head01" },
+					{ "time": 0.2667, "name": "head01" },
+					{ "time": 0.5333, "name": "head01" },
+					{ "time": 0.8, "name": "head01" },
+					{ "time": 1.0667, "name": "head01" },
+					{ "time": 1.3333, "name": "head01" },
+					{ "time": 1.6, "name": "head01" },
+					{ "time": 2, "name": "head01" }
 				]
 			}
 		},
@@ -724,12 +738,15 @@
 	},
 	"dead2": {
 		"slots": {
-			"face01": {
+			"head": {
 				"attachment": [
-					{ "time": 0, "name": "face02" },
-					{ "time": 1.0667, "name": "face02" },
-					{ "time": 1.1, "name": "face01" },
-					{ "time": 2, "name": "face01" }
+					{ "time": 0, "name": "head01" },
+					{ "time": 0.2667, "name": "head01" },
+					{ "time": 0.5333, "name": "head01" },
+					{ "time": 0.8, "name": "head01" },
+					{ "time": 1.0667, "name": "head01" },
+					{ "time": 1.1667, "name": "head01" },
+					{ "time": 2, "name": "head01" }
 				]
 			}
 		},
@@ -1232,6 +1249,15 @@
 		]
 	},
 	"run1": {
+		"slots": {
+			"head": {
+				"attachment": [
+					{ "time": 0, "name": "head02" },
+					{ "time": 0.2667, "name": "head02" },
+					{ "time": 0.5333, "name": "head02" }
+				]
+			}
+		},
 		"bones": {
 			"pelvis": {
 				"rotate": [

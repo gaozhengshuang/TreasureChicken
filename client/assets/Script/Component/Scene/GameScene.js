@@ -20,8 +20,9 @@ cc.Class({
         countDownLabel: { default: null, type: cc.Label },
         questionLabel: { default: null, type: cc.Label },
         lastLabel: { default: null, type: cc.Label },
-        redpackNode: { default: null, type: cc.Node },
         coldDownNum: { default: 0, type: cc.Integer },
+        matchingNode: { default: null, type: cc.Node },
+        sumRewardLabel: { default: null, type: cc.Label }
     },
 
     onLoad() {
@@ -44,13 +45,6 @@ cc.Class({
                 this.bg2.y = -bgHeight;
             }, this),
         ])));
-        this.redpackNode.rotation = -10;
-        this.redpackNode.runAction(cc.repeatForever(
-            cc.sequence([
-                cc.rotateTo(0.18, 10),
-                cc.rotateTo(0.18, -10),
-            ])
-        ));
         //初始化玩家咯
         for (let i = 0; i < Game.RoomModel.members.length; i++) {
             let member = Game.RoomModel.members[i];
@@ -63,6 +57,7 @@ cc.Class({
             }
         }
         this.lastLabel.string = '剩余' + (this.playerViews.length + 1) + '人';
+        this.sumRewardLabel.string = '总奖池\n' + Game.RoomModel.sumreward + '金币';
         this._updateResultButton();
         this.onGameStateChange(Game.GameController.state);
         Game.NotificationController.On(Game.Define.EVENT_KEY.ROOMINFO_UPDATEINFO, this, this.onUpdateRoomInfo);
@@ -79,6 +74,14 @@ cc.Class({
             if (lastTime > 0) {
                 this.countDownLabel.string = lastTime
             } else {
+                this.countDownLabel.string = '';
+            }
+        } else if (Game.GameController.state == Game.ChickenDefine.GAME_STATE.STATE_PENDING) {
+            let lastToStartTime = this._getLastToStartTime();
+            if (lastToStartTime >= 0) {
+                this.countDownLabel.string = lastToStartTime
+            } else {
+                this.matchingNode.active = false;
                 this.countDownLabel.string = '';
             }
         } else {
@@ -120,12 +123,13 @@ cc.Class({
                     return o.playerInfo.uid == info.uid;
                 });
                 if (playerView) {
-                    playerView.UpdateInfo(info);
+                    playerView.UpdateInfo(info, info.uid == Game.UserModel.GetUserId() ? 'http://jump.cdn.giantfun.cn/cdn/jumphead/tx%20(36).jpg' : null);
                     this._updatePlayerView(playerView, info.answer);
                 }
             }
         }
         this.lastLabel.string = '剩余' + (this.playerViews.length + 1) + '人';
+        this.sumRewardLabel.string = '总奖池\n' + Game.RoomModel.sumreward + '金币';
     },
     onUpdateQuestion() {
         this.questionLabel.string = Game.RoomModel.question;
@@ -159,7 +163,15 @@ cc.Class({
                 if (playerView) {
                     playerView._playDieAction();
                 }
+                Game._.remove(this.playerViews, function (o) {
+                    return o.playerInfo.uid == id;
+                });
             }
+        }
+        if (Game.RoomModel.answer == Game.ChickenDefine.GAME_RESULT.RESULT_RIGHT) {
+            this.rightPlayerGroupView.ClearGroup();
+        } else {
+            this.leftPlayerGroupView.ClearGroup();
         }
         //TODO 从this.playerViews中移除
         this.lastLabel.string = '剩余' + (this.playerViews.length + 1) + '人';
@@ -170,6 +182,10 @@ cc.Class({
             this._activeResultButton(true);
         } else {
             this._activeResultButton(false);
+        }
+
+        if (Game.ChickenDefine.GAME_STATE.STATE_PENDING != state) {
+            this.matchingNode.active = false;
         }
     },
     onLoginComplete() {
@@ -192,7 +208,7 @@ cc.Class({
         let playerView = node.getComponent(PlayerView);
         let index = 0;
         let targetPos = cc.Vec2.ZERO;
-        playerView.UpdateInfo(info);
+        playerView.UpdateInfo(info, info.uid == Game.UserModel.GetUserId() ? 'http://jump.cdn.giantfun.cn/cdn/jumphead/tx%20(36).jpg' : null);
         if (info.answer == Game.ChickenDefine.GAME_RESULT.RESULT_RIGHT) {
             index = this.leftPlayerGroupView.EnterGroup(playerView);
             targetPos = this.leftPlayerGroupView.GetPositionByIndex(index);
@@ -202,6 +218,7 @@ cc.Class({
             targetPos = this.rightPlayerGroupView.GetPositionByIndex(index);
             console.log('右边第' + index + '个');
         }
+        node.setLocalZOrder(-index);
         node.position = this._randomOutScreenPos();
         node.runAction(cc.moveTo(1, targetPos));
         this.playerViewParent.addChild(node);
@@ -221,6 +238,7 @@ cc.Class({
             index = this.rightPlayerGroupView.EnterGroup(playerView);
             targetPos = this.rightPlayerGroupView.GetPositionByIndex(index);
         }
+        playerView.node.setLocalZOrder(-index);
         playerView.node.stopAllActions();
         playerView.node.runAction(
             cc.sequence([
@@ -260,6 +278,10 @@ cc.Class({
     },
     _getLastTime() {
         let lastTime = Math.max(0, this.coldDownNum - Game.TimeController.GetCurTime());
+        return lastTime;
+    },
+    _getLastToStartTime() {
+        let lastTime = Math.max(-1, Game.RoomModel.startTime - Game.TimeController.GetCurTime());
         return lastTime;
     }
 });

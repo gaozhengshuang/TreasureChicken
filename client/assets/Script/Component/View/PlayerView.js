@@ -1,4 +1,10 @@
 let Game = require('../../Game');
+
+const SkinName = [
+    '37fen',
+    'pingtou',
+    'qiliuhai'
+]
 cc.Class({
     extends: cc.Component,
 
@@ -6,12 +12,15 @@ cc.Class({
         playerNode: { default: null, type: cc.Node },
         playerInfo: { default: null },
         playerSkeleton: { default: null, type: sp.Skeleton },
+        playerSprite: { default: null, type: cc.Sprite },
+        playerHeadNode: { default: null, type: cc.Node }
     },
 
     onLoad() {
     },
 
     start() {
+        this.playerSkeleton.setSkin(SkinName[Game.Tools.GetRandomInt(0, 3)]);
         this._playRunAction();
     },
 
@@ -21,19 +30,29 @@ cc.Class({
     onDestroy() {
     },
 
-    UpdateInfo(info) {
+    UpdateInfo(info, userHeadUrl) {
         this.playerInfo = info;
+        this.playerHeadNode.active = (userHeadUrl != null);
+        if (userHeadUrl != null) {
+            cc.loader.load(userHeadUrl, function (err, res) {
+                if (err) {
+                    console.log('[严重错误] 加载资源失败 ' + err);
+                } else {
+                    this.playerSprite.spriteFrame = new cc.SpriteFrame(res);
+                }
+            }.bind(this));
+        }
     },
     _playRunAction() {
         this.playerSkeleton.setAnimation(0, 'run1', true);
     },
     _playDieAction(callback) {
-        this.playerSkeleton.setAnimation(0, 'dead1', false);
-        if (Game._.isFunction(callback)) {
-            this.node.runAction(cc.sequence([
-                cc.delayTime(2),
-                cc.callFunc(callback)
-            ]))
-        }
+        this.playerSkeleton.setAnimation(0, 'dead2', false);
+        this.node.runAction(cc.sequence([
+            cc.moveBy(3, 0, 1100),
+            cc.callFunc(function () {
+                Game.Tools.InvokeCallback(callback);
+            }, this)
+        ]));
     }
 });

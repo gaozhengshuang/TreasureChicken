@@ -1,61 +1,82 @@
 
 QA.png
-size: 256,128
+size: 512,128
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
 arm01
-  rotate: false
-  xy: 44, 14
+  rotate: true
+  xy: 180, 2
   size: 24, 20
   orig: 24, 20
   offset: 0, 0
   index: -1
 arm02
-  rotate: false
-  xy: 114, 52
+  rotate: true
+  xy: 202, 2
   size: 24, 20
   orig: 24, 20
   offset: 0, 0
   index: -1
 body
   rotate: false
-  xy: 2, 2
+  xy: 356, 5
   size: 40, 32
   orig: 40, 32
   offset: 0, 0
   index: -1
-face01
-  rotate: false
-  xy: 114, 74
-  size: 61, 49
-  orig: 61, 49
-  offset: 0, 0
-  index: -1
-face02
-  rotate: false
-  xy: 177, 78
-  size: 49, 45
-  orig: 49, 45
-  offset: 0, 0
-  index: -1
-head
-  rotate: false
-  xy: 2, 36
+head01
+  rotate: true
+  xy: 2, 15
   size: 110, 87
   orig: 110, 87
   offset: 0, 0
   index: -1
+head02
+  rotate: true
+  xy: 91, 15
+  size: 110, 87
+  orig: 110, 87
+  offset: 0, 0
+  index: -1
+head11
+  rotate: false
+  xy: 180, 28
+  size: 86, 97
+  orig: 86, 97
+  offset: 0, 0
+  index: -1
+head12
+  rotate: false
+  xy: 268, 28
+  size: 86, 97
+  orig: 86, 97
+  offset: 0, 0
+  index: -1
+head21
+  rotate: true
+  xy: 432, 39
+  size: 86, 74
+  orig: 86, 74
+  offset: 0, 0
+  index: -1
+head22
+  rotate: true
+  xy: 356, 39
+  size: 86, 74
+  orig: 86, 74
+  offset: 0, 0
+  index: -1
 leg01
   rotate: false
-  xy: 228, 93
+  xy: 398, 7
   size: 26, 30
   orig: 26, 30
   offset: 0, 0
   index: -1
 leg02
   rotate: false
-  xy: 228, 62
+  xy: 426, 8
   size: 26, 29
   orig: 26, 29
   offset: 0, 0
