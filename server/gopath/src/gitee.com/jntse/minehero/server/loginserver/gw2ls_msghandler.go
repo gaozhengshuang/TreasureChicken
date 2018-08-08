@@ -7,7 +7,7 @@ import (
 	"gitee.com/jntse/gotoolkit/log"
 	"gitee.com/jntse/gotoolkit/net"
 	_"gitee.com/jntse/gotoolkit/util"
-	pb"github.com/gogo/protobuf/proto"
+	pb"github.com/golang/protobuf/proto"
 	"gitee.com/jntse/minehero/pbmsg"
 	"gitee.com/jntse/minehero/server/tbl"
 )

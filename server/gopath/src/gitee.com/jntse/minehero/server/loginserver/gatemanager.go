@@ -8,7 +8,7 @@ import (
 	"gitee.com/jntse/gotoolkit/log"
 	"gitee.com/jntse/gotoolkit/util"
 	"gitee.com/jntse/gotoolkit/eventqueue"
-	pb "github.com/gogo/protobuf/proto"
+	pb "github.com/golang/protobuf/proto"
 	"gitee.com/jntse/minehero/server/def"
 )
 

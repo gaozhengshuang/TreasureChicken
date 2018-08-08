@@ -102,6 +102,10 @@ func (this *RoomAgent) DelMember(uid int64) bool{
         //this.updateflag = true
         //send := &msg.GW2C_GameOver{Reward : pb.Int32(0)}
         //this.SendMsgById(send, uid)
+        user := UserMgr().FindById(uint64(uid))
+        if user != nil {
+            user.roomid = 0
+        }
         log.Info("房间[%d] 玩家[%d]失败离开房间", this.Id(), uid)
         return true
     }
@@ -340,7 +344,7 @@ func (this *RoomSvrManager) OnClose(uid int64) {
 
 func (this *RoomSvrManager) AddNew(id int64, gtype int32) *RoomAgent{
 	agent := NewRoomAgent(id, gtype)
-    this.curidmap[gtype] = id
+    this.curidmap[gtype] = id % 1000000000
 	this.AddRoom(agent)
 	log.Info("注册房间 id=%d 当前总数:%d", agent.Id(), RoomSvrMgr().Num())
     return agent
@@ -383,6 +387,15 @@ func (this *RoomSvrManager) AnswerQuestion(user *GateUser, answer int32) {
     }
     room.AnswerQuestion(int64(user.Id()), answer)
     log.Info("玩家[%d] 开始答题游戏, 答案为:%d", user.Id(), answer)
+}
+
+func (this *RoomSvrManager) LeaveGame(user *GateUser) {
+    room := this.FindRoom(user.roomid)
+    if room == nil {
+        return
+    }
+    room.DelMember(int64(user.Id()))
+    log.Info("玩家[%d] 离开游戏, 房间[%d]", user.Id(), room.Id())    
 }
 
 

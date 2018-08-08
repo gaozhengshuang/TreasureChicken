@@ -116,7 +116,7 @@ func on_BT_GameEnd(session network.IBaseNetSession, message interface{}) {
 		return
 	}
 	if user.IsOnline() { user.SendMsg(&msg.BT_GameOver{Roomid:tmsg.Roomid}) }
-	user.GameEnd(tmsg.GetBin(), tmsg.GetReason())
+	//user.GameEnd(tmsg.GetBin(), tmsg.GetReason())
 	log.Info("房间[%d] BT_GameEnd 游戏结束，Owner[%d]", tmsg.GetRoomid(), tmsg.GetOwnerid())
 }
 

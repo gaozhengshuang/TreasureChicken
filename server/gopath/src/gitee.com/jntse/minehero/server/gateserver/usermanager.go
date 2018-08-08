@@ -2,13 +2,11 @@ package main
 import (
 	_"fmt"
 	_"time"
-	pb "github.com/gogo/protobuf/proto"
+	pb "github.com/golang/protobuf/proto"
 	"gitee.com/jntse/gotoolkit/log"
 	"gitee.com/jntse/gotoolkit/net"
 	"gitee.com/jntse/minehero/pbmsg"
-	"gitee.com/jntse/gotoolkit/util"
-	_"gitee.com/jntse/gotoolkit/eventqueue"
-	_"reflect"
+	_"gitee.com/jntse/gotoolkit/util"
 )
 
 // --------------------------------------------------------------------------
@@ -62,11 +60,6 @@ func (this *LoginWaitPool) Tick(now int64) {
 	}
 }
 
-type BufferMsg struct {
-	msg pb.Message
-	tm_timeout int64
-}
-
 // --------------------------------------------------------------------------
 /// @brief 玩家管理器
 // --------------------------------------------------------------------------
@@ -74,14 +67,12 @@ type UserManager struct {
 	accounts	map[string]*GateUser
 	ids			map[uint64]*GateUser
 	names		map[string]*GateUser
-	msgbuffer	map[uint64]*BufferMsg
 }
 
 func (this *UserManager) Init() {
 	this.accounts = make(map[string]*GateUser)
 	this.names = make(map[string]*GateUser)
 	this.ids = make(map[uint64]*GateUser)
-	this.msgbuffer = make(map[uint64]*BufferMsg)
 }
 
 func (this *UserManager) CreateNewUser(session network.IBaseNetSession, account, key, token, face string) (*GateUser, string) {
@@ -98,7 +89,6 @@ func (this *UserManager) CreateNewUser(session network.IBaseNetSession, account,
 	WaitPool().Remove(account)
 	this.AddUser(user)
 	log.Info("当前在线人数:%d", len(this.accounts))
-	//this.AddAccount(user)
 	return user, ""
 }
 
@@ -152,15 +142,6 @@ func (this *UserManager) DelUser(user *GateUser) {
 }
 
 func (this *UserManager) Tick(now int64) {
-	
-	// faster broadcast
-	for k, v := range this.msgbuffer {
-		if now > v.tm_timeout {
-			delete(this.msgbuffer, k)
-		}
-	}
-
-	// user
 	for _, user := range this.accounts {
 		if this.IsRemove(user, now) {
 			continue
@@ -196,7 +177,7 @@ func (this *UserManager) OnRoomServerClose(sid int) {
 	for _, user := range this.accounts {
 		if sid == user.RoomSid() {
 			user.SendMsg(&msg.BT_GameOver{Roomid:pb.Int64(user.RoomId())})
-			user.GameEnd(nil , "房间服务器断开")
+			//user.GameEnd(nil , "房间服务器断开")
 		}
 	}
 }
@@ -210,66 +191,19 @@ func (this *UserManager) OnServerClose() {
 
 // 广播消息
 func (this *UserManager) BroadcastMsg(msg pb.Message) {
-	t1 := util.CURTIMEUS()
 	for _, user := range this.accounts {
 		user.SendMsg(msg)
+		//key := fmt.Sprintf("accounts_%s", user.Account())
+		//Redis().Exists(key)
 	}
-	log.Trace("BroadcastMsg Amount[%d] 耗时[%d]us", len(this.accounts), util.CURTIMEUS() - t1)
 }
-
-// 通过buffer广播消息
-func (this *UserManager) BroadcastMsgFaster(msg pb.Message) {
-	t1 , uuid := util.CURTIMEUS(), util.UUID()
-	this.msgbuffer[uuid] = &BufferMsg{msg:msg, tm_timeout:util.CURTIMEMS()+10000}
-	for _ , user := range this.accounts {
-		user.AddBroadCastMsg(uuid)
-	}
-	log.Trace("BroadcastMsgFaster Amount[%d] 耗时[%d]us", len(this.accounts), util.CURTIMEUS() - t1)
-}
-
-func (this *UserManager) PickBroadcastMsg(uid uint64) pb.Message {
-	buffermsg, ok := this.msgbuffer[uid]
-	if ok == false { return nil }
-	return buffermsg.msg
-}
-
-
-// 异步广播消息
-//func (this *UserManager) BroadcastMsgAsyn(msg pb.Message) {
-//	arglist := []interface{}{msg}
-//	eventque.NewCommonEvent(arglist, this.DoBroadcastMsgAsyn, nil)
-//}
-//
-//func (this *UserManager) DoBroadcastMsgAsyn(arglist []interface{}) []interface{} {
-//	if len(arglist) != 1 {
-//		log.Fatal("DoBroadcastMsgAsyn 参数数量错误")
-//		return nil
-//	}
-//	msg, ok := arglist[0].(pb.Message)
-//	if ok == false { 
-//		log.Fatal("DoBroadcastMsgAsyn 类型转换错误 argu真实类型是：%s", reflect.TypeOf(arglist[0]).String());
-//		return nil 
-//	}
-//
-//	// copy lock
-//	locker.lock()
-//	accounts_tmp := make(map[string]*GateUser)
-//	for k, v := range this.accounts { accounts_tmp[k] = v }
-//	locker.unlock()
-//	for _, user := range accounts_tmp {
-//		user.SendMsg(msg)
-//	}
-//
-//	return nil
-//}
-
 
 // TODO:整点赠送免费步数，异步事件处理
-//func (this *UserManager) GiveFreeStep(now int64) {
-//	for _, user := range this.accounts {
-//		event := NewGiveFreeStepEvent(now, "整点在线获得", user.CheckGiveFreeStep)
-//		user.AsynEventInsert(event)
-//	}
-//}
-
+func (this *UserManager) GiveFreeStep(now int64) {
+	//for _, user := range this.accounts {
+		//user.CheckGiveFreeStep(now, "整点在线获得")
+		//event := NewGiveFreeStepEvent(now, "整点在线获得", user.CheckGiveFreeStep)
+		//user.AsynEventInsert(event)
+	//}
+}
 

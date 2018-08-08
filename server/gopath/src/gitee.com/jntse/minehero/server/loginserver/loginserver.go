@@ -14,7 +14,7 @@ import (
 	_"gitee.com/jntse/minehero/pbmsg"
 	"gitee.com/jntse/minehero/server/tbl"
 	"github.com/go-redis/redis"
-	pb "github.com/gogo/protobuf/proto"
+	pb "github.com/golang/protobuf/proto"
 )
 
 
@@ -220,7 +220,7 @@ func (this *LoginServer) StartRedis() bool {
 		return false
 	}
 
-	log.Info("连接Redis[%s]成功", this.netconf.Redis.Host.String())
+	log.Info("连接Redis成功")
 	return true
 }
 
@@ -335,7 +335,7 @@ func (this *LoginServer) AsynEventInsert(event eventque.IEvent) {
 func GenerateUserId() (userid uint64, errcode string ) {
 	key := "genuserid"
 	id, err := Redis().Incr(key).Result()
-	var idstart uint64 = 1000
+	var idstart uint64 = 1000000
 	if err != nil {
 		log.Error("生成userid redis报错, err: %s", err)
 		return 0, "redis不可用"

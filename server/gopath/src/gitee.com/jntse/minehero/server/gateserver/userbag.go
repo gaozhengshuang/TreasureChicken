@@ -1,7 +1,7 @@
 package main
 import "gitee.com/jntse/minehero/pbmsg"
 import "gitee.com/jntse/gotoolkit/log"
-import pb "github.com/gogo/protobuf/proto"
+import pb "github.com/golang/protobuf/proto"
 import "gitee.com/jntse/minehero/server/tbl"
 import "gitee.com/jntse/minehero/server/tbl/excel"
 

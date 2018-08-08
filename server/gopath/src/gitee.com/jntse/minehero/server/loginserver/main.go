@@ -109,7 +109,7 @@ func main_pprof() {
 
 func runMainLoop(server *LoginServer) {
 	for {
-		time.Sleep(time.Microsecond * 100)
+		time.Sleep(time.Microsecond * 1000)
 		select {
 		case cmd, open := <-g_KeyBordInput.C:
 			if cmd == "exit" || cmd == "quit" || open == false {

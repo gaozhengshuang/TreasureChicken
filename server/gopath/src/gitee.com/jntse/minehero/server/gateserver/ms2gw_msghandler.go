@@ -6,7 +6,7 @@ import (
 	"gitee.com/jntse/gotoolkit/log"
 	"gitee.com/jntse/gotoolkit/net"
 	"gitee.com/jntse/gotoolkit/util"
-	//pb"github.com/gogo/protobuf/proto"
+	//pb"github.com/golang/protobuf/proto"
 	"gitee.com/jntse/minehero/pbmsg"
 	"gitee.com/jntse/minehero/server/tbl"
 )
@@ -74,26 +74,25 @@ func on_MS2GW_HeartBeat(session network.IBaseNetSession, message interface{}) {
 func on_MS2GW_MsgNotice(session network.IBaseNetSession, message interface{}) {
 	tmsg := message.(*msg.MS2GW_MsgNotice)
 	//log.Info(reflect.TypeOf(tmsg).String())
-	//UserMgr().BroadcastMsg(tmsg.GetNotice())
-	UserMgr().BroadcastMsgFaster(tmsg.GetNotice())
+	UserMgr().BroadcastMsg(tmsg.GetNotice())
 }
 
 func on_MS2GW_RetCreateRoom(session network.IBaseNetSession, message interface{}) {
-	tmsg := message.(*msg.MS2GW_RetCreateRoom)
-	err, userid, roomid, roomagent := tmsg.GetErrcode(), tmsg.GetUserid(), tmsg.GetRoomid(), tmsg.GetRoomagent()
-	user := UserMgr().FindById(userid)
-	if user == nil {
-		log.Error("玩家:%d 请求创建房间返回，但找不到玩家", userid)
-		return
-	}
+	//tmsg := message.(*msg.MS2GW_RetCreateRoom)
+	//err, userid, roomid, roomagent := tmsg.GetErrcode(), tmsg.GetUserid(), tmsg.GetRoomid(), tmsg.GetRoomagent()
+	//user := UserMgr().FindById(userid)
+	//if user == nil {
+	//	log.Error("玩家:%d 请求创建房间返回，但找不到玩家", userid)
+	//	return
+	//}
 
-	if err == "" {
-		user.StartGameOk(roomagent, roomid)
-	}else {
-		user.StartGameFail(err)
-	}
+	//if err == "" {
+		//user.StartGameOk(roomagent, roomid)
+	//}else {
+		//user.StartGameFail(err)
+	//}
 
-	user.ReplyStartGame(err, roomid)
+	//user.ReplyStartGame(err, roomid)
 }
 
 func on_MS2Server_BroadCast(session network.IBaseNetSession, message interface{}) {

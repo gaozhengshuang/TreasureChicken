@@ -7,7 +7,7 @@ import (
 	"gitee.com/jntse/minehero/server/tbl"
 	"gitee.com/jntse/minehero/server/def"
 	"gitee.com/jntse/minehero/pbmsg"
-	pb "github.com/gogo/protobuf/proto"
+	pb "github.com/golang/protobuf/proto"
 	"encoding/json"
 	"net/http"
 	"strconv"
@@ -23,13 +23,16 @@ func (this *GateUser) AddItem(item uint32, num uint32, reason string) {
 	if item == uint32(msg.ItemId_YuanBao) {
 		this.AddYuanbao(num, reason)
 	}else if item == uint32(msg.ItemId_Gold) {
-		this.AddMoney(num, reason, true)
+		this.AddMoney(num, reason)
 	}else if item == uint32(msg.ItemId_Coupon) {
 		this.AddCoupon(num, reason)
 	}else if item == uint32(msg.ItemId_FreeStep) {
-		this.AddFreeStep(int32(num), reason)
+		//this.AddFreeStep(int32(num), reason)
 	}else {
-		this.bag.AddItem(item, num, reason)
+		base, ok := tbl.ItemBase.ItemBaseDataById[item]
+		if ok && this.bag.AddItem(item, num, reason) != nil {
+			this.PlatformPushLootMoney(float32(base.RealPrice) * float32(num))
+		}
 	}
 	//CountMgr().AddGet(item, num)
 	RCounter().IncrByDate("item_add", uint32(item), num)
@@ -37,33 +40,19 @@ func (this *GateUser) AddItem(item uint32, num uint32, reason string) {
 
 // 扣除道具
 func (this *GateUser) RemoveItem(item uint32, num uint32, reason string) bool{
-	return this.bag.RemoveItem(item, num, reason)
+	base, ok := tbl.ItemBase.ItemBaseDataById[item]
+	if ok && this.bag.RemoveItem(item, num, reason) {
+		this.PlatformPushConsumeMoney(float32(base.RealPrice) * float32(num))
+		return true
+	}
+	return false
 }
 
 // 金币
 func (this *GateUser) GetMoney() uint32   { return this.money }
-func (this *GateUser) AddMoney(gold uint32, reason string, syn bool) {
+func (this *GateUser) AddMoney(gold uint32, reason string) {
 	this.money = this.GetMoney() + gold
-	if syn {
-		send := &msg.GW2C_UpdateGold{Num:pb.Uint32(this.GetMoney())}
-		this.SendMsg(send)
-	}
 	log.Info("玩家[%d] 添加金币[%d] 库存[%d] 原因[%s]", this.Id(), gold, this.GetMoney(), reason)
-}
-func (this *GateUser) RemoveMoney(gold uint32, reason string, syn bool) bool {
-	if this.GetMoney() > gold {
-		userbase := this.UserBase()
-		userbase.Money = pb.Uint32(this.GetMoney() - gold)
-		if syn {
-			send := &msg.GW2C_UpdateGold{Num:pb.Uint32(this.GetMoney())}
-			this.SendMsg(send)
-		}
-		log.Info("玩家[%d] 扣除金币[%d] 剩余[%d] 原因[%s]", this.Id(), gold, this.GetMoney(), reason)
-		RCounter().IncrByDate("item_remove", uint32(msg.ItemId_Gold), gold)
-		return true
-	}
-	log.Info("玩家[%d] 扣除金币失败[%d] 原因[%s]", this.Id(), gold, reason)
-	return false
 }
 
 // 添加元宝
@@ -74,6 +63,7 @@ func (this *GateUser) AddYuanbao(yuanbao uint32, reason string) {
 	this.SendMsg(send)
 	RCounter().IncrByDate("item_add", uint32(msg.ItemId_YuanBao), yuanbao)
 	log.Info("玩家[%d] 添加元宝[%d] 库存[%d] 原因[%s]", this.Id(), yuanbao, this.GetYuanbao(), reason)
+	this.PlatformPushLootMoney(float32(yuanbao))
 }
 func (this *GateUser) RemoveYuanbao(yuanbao uint32, reason string) bool {
 	if this.GetYuanbao() >= yuanbao {
@@ -82,6 +72,7 @@ func (this *GateUser) RemoveYuanbao(yuanbao uint32, reason string) bool {
 		this.SendMsg(send)
 		log.Info("玩家[%d] 扣除元宝[%d] 库存[%d] 原因[%s]", this.Id(), yuanbao, this.GetYuanbao(), reason)
 		RCounter().IncrByDate("item_remove", uint32(msg.ItemId_YuanBao), yuanbao)
+		this.PlatformPushConsumeMoney(float32(yuanbao))
 		return true
 	}
 	log.Info("玩家[%d] 扣除元宝[%d]失败 库存[%d] 原因[%s]", this.Id(), yuanbao, this.GetYuanbao(), reason)
@@ -110,20 +101,6 @@ func (this *GateUser) RemoveCoupon(num uint32, reason string) bool {
 	log.Info("玩家[%d] 添加金卷[%d]失败 库存[%d] 原因[%s]", this.Id(), num, this.GetCoupon(), reason)
 	return false
 }
-
-// 添加免费步数
-func (this *GateUser) GetFreeStep() int32 { return this.freestep }
-func (this *GateUser) SetFreeStep(num int32, reason string) {
-	this.freestep = 0
-	this.AddFreeStep(num, reason)
-}
-func (this *GateUser) AddFreeStep(num int32, reason string) {
-	this.freestep = this.GetFreeStep() + num
-	send := &msg.GW2C_UpdateFreeStep{Num:pb.Int32(this.GetFreeStep())}
-	this.SendMsg(send)
-	log.Info("玩家[%d] 添加免费步数[%d] 库存[%d] 原因[%s]", this.Id(), num, this.GetFreeStep(), reason)
-}
-
 
 // 购买道具
 func (this* GateUser) BuyItem(productid uint32, num uint32) {
@@ -189,8 +166,8 @@ func (this* GateUser) UseItem(itemid , num uint32) {
 
 
 // 提钻石
-func (this *GateUser) DeliveryDiamond(list []*msg.DeliveryGoods, token string) {
-
+func (this *GateUser) DeliveryDiamond(list []*msg.DeliveryGoods, token string, phone string) {
+	defer this.SetDeliveryState(false)
 	var diamondNum, partsNum uint32 = 0, 0
 	for _, item := range list {
 
@@ -253,16 +230,17 @@ func (this *GateUser) DeliveryDiamond(list []*msg.DeliveryGoods, token string) {
 		this.SendMsg(send)
 	}else {
 		log.Info("玩家[%s %d] 提取钻石异常，消耗钻石%d个，卷%d个", this.Name(), this.Id(), diamondNum, partsNum-remainParts)
-		this.SendNotify("提取钻石暂不可用，请稍后再试")
+		this.SendNotify("今日可兑换钻石额度已达上线，明日再来兑换")
 	}
 
 }
 
 // 提货
-func (this *GateUser) DeliveryGoods(list []*msg.DeliveryGoods, token string) {
+func (this *GateUser) DeliveryGoods(list []*msg.DeliveryGoods, token string, tel string) {
+	defer this.SetDeliveryState(false)
 
 	// 虚拟道具不扣运费，小商品不能单独邮寄
-	IsFreeDelivercost, IsAllSmallware := true, true
+	IsFreeDelivercost := true
 	for _, item := range list {
 		base, ok := tbl.ItemBase.ItemBaseDataById[item.GetItemid()]
 		if ok == false { 
@@ -273,15 +251,15 @@ func (this *GateUser) DeliveryGoods(list []*msg.DeliveryGoods, token string) {
 			IsFreeDelivercost = false
 		}
 		if base.Type != int32(msg.ItemType_Smallware) {
-			IsAllSmallware = false
+			//IsAllSmallware = false
 		}
 	}
 
 	// 小商品不能单独邮寄
-	if IsAllSmallware == true {
-		this.SendNotify("小商品不能单独邮寄")
-		return
-	}
+	//if IsAllSmallware == true {
+	//	this.SendNotify("小商品不能单独邮寄")
+	//	return
+	//}
 
 	// 虚拟道具不扣运费，实物道具邮寄少于2个道具扣运费
 	amount, delivercost := uint32(0), uint32(0)
@@ -291,21 +269,25 @@ func (this *GateUser) DeliveryGoods(list []*msg.DeliveryGoods, token string) {
 		}
 		if int64(amount) < tbl.Global.Delivery.Freelimit  {
 			delivercost = uint32(tbl.Global.Delivery.Cost)
-			if this.GetYuanbao() < delivercost {
-				this.SendNotify("运费不足")
-				return
-			}
+			//if this.GetYuanbao() < delivercost {
+			//	this.SendNotify("运费不足")
+			//	return
+			//}
 		}
 	}
 
 
 	// 玩家收货地址为空，从红包获取一次
-	if this.GetAddressSize() == 0 {
-		this.SendNotify("提货失败，没有收货地址")
-		log.Error("[提货] 玩家[%s %d] 没有收货地址", this.Name(), this.Id())
-		return
+	if this.GetAddressSize() == 0 && tel == ""{
+		receiver, phone, address := RequestUserHomeAddress(this.Account(), token)
+		if address == "" || phone == "" || receiver == "" {
+			this.SendNotify("提货失败，没有收货地址")
+			log.Error("[提货] 玩家[%s %d] 没有收货地址", this.Name(), this.Id())
+			return
+		}
+		this.AddAddress(receiver, phone, address)
+		//this.AddAddress("测试测试", "13681626939", "上海市闵行区1333弄28号31栋901")
 	}
-
 
 	// 检查
 	for _, item := range list {
@@ -317,8 +299,15 @@ func (this *GateUser) DeliveryGoods(list []*msg.DeliveryGoods, token string) {
 	}
 
 
-	// 删除
-	if delivercost >= 0 { this.RemoveYuanbao(delivercost, "提货扣运费") }
+	// 扣钱
+	if delivercost > 0 { 
+		if this.RemovePlatformCoins(int32(delivercost), "提货扣运费") == false {
+			this.SendNotify(fmt.Sprintf("运费不足, 需要%d金币", delivercost))
+			return
+		}
+	}
+
+	// 扣道具
 	for _, item := range list {
 		this.RemoveItem(item.GetItemid(), item.GetNum(), "玩家提货")
 	}
@@ -339,7 +328,6 @@ func (this *GateUser) DeliveryGoods(list []*msg.DeliveryGoods, token string) {
 		Nonce		string		`json:"nonce"`
 		Sign		string		`json:"sign"`
 		GameId		string		`json:"gameid"`
-		Dev			string		`json:"dev"`
 		Items		[]OrderItem	`json:"itemlist"`
 	}
 
@@ -347,16 +335,20 @@ func (this *GateUser) DeliveryGoods(list []*msg.DeliveryGoods, token string) {
 	key1 := "top5737e7d6cb76cc84cb74bd9df946c"
 	key2 := "01ca55b6371a5e5023130a0c6ea5dd11883af1c7bbbede3dea52d01a25877019"
 
-	address := this.GetDefaultAddress();
-	order := &DeliveryOrder{ Id:this.Id(), Way: "0", Name:address.GetReceiver(), Phone:address.GetPhone(), Address:address.GetAddress()}
-	order.GameId = tbl.Global.Delivery.GameID
-	order.Dev = tbl.Global.Delivery.Dev		// 测试标记
+	var order DeliveryOrder
+	if tel == "" {
+		address := this.GetDefaultAddress();
+		order = DeliveryOrder{ Id:this.Id(), Way: "0", Name:address.GetReceiver(), Phone:address.GetPhone(), Address:address.GetAddress(), GameId:tbl.Global.Delivery.GameID}
+	}else{
+		order = DeliveryOrder{ Id:this.Id(), Way: "0", Name:"", Phone:tel, Address:"", GameId:tbl.Global.Delivery.GameID}
+	}
 	for _, item := range list {
 		base := FindItemBase(item.GetItemid())
 		if base == nil { log.Error("[提货] 玩家[%s %d] 道具[%d]配置无效", this.Name(), this.Id(), item.GetItemid()); continue }
 		orderitem := OrderItem{Id:base.Id, Desc:base.Name, Count:item.GetNum()}
 		order.Items = append(order.Items, orderitem)
 	}
+
 	order.Nonce = strconv.FormatInt(int64(this.Id()), 10) + "_" + strconv.FormatInt(util.CURTIMEUS(), 10)
 	signbytes := []byte(key1 + order.Nonce + key2)
 	md5array  := md5.Sum(signbytes)
@@ -382,11 +374,29 @@ func (this *GateUser) DeliveryGoods(list []*msg.DeliveryGoods, token string) {
 	}
 
 	if resp.Code != http.StatusOK {
-		log.Error("[提货] 玩家[%s %d] HttpPost返回错误码 resp[%v]", this.Name(), this.Id(), resp)
+		log.Error("[提货] 玩家[%s %d] HttpPost返回错误码 resp[%s]", this.Name(), this.Id(), resp)
 		return
 	}
 
-	this.SendNotify("提货成功")
+	type stRespBody struct {
+		Msg		string
+		Code 	int32
+		Data	string
+	}
+	var jresp stRespBody
+	unerr := json.Unmarshal(resp.Body, &jresp)
+	if unerr != nil {
+		log.Info("[提货] 玩家[%s %d] json.Unmarshal解析失败[%s] ", this.Name(), this.Id(), unerr)
+		return
+	}
+
+	if jresp.Code != 0 {
+		log.Error("[提货] 玩家[%s %d] Http返回失败 status[%d] msg[%s]", this.Name(), this.Id(), jresp.Code, jresp.Msg)
+		return
+	}
+
+	log.Info("[提货] 玩家[%s %d] 提货成功 Data=%s", this.Name(), this.Id(), jresp.Data)
+	this.SendNotify("提货成功,请耐心等待系统发货！")
 }
 
 // 同步大奖被拿走次数
@@ -460,6 +470,12 @@ func (this *GateUser) CheckHaveCompensation() {
 			continue
 		}
 
+		_, ok := tbl.ItemBase.ItemBaseDataById[uint32(intid)]
+		if ok == false {
+			log.Error("玩家[%s %d] 获得无效的补偿道具[%d]", this.Name(), this.Id(), intid)
+			continue
+		}
+
 		this.AddItem(uint32(intid), uint32(intnum), "系统补偿")
 		Redis().Del(strkey)
 		//log.Info("玩家%s获得系统补偿 id:%d, 数量:%d", this.account, intid, intnum)
@@ -494,96 +510,4 @@ func (this *GateUser) LoginStatistics() {
 		}
 	}
 }
-
-// 幸运抽奖
-func (this *GateUser) LuckyDraw() {
-
-	// 检查消耗
-	cost := uint32(tbl.Game.LuckDrawPrice)
-	if this.GetMoney() < cost {
-		this.SendNotify("金币不足")
-		return
-	}
-	this.RemoveMoney(cost, "幸运抽奖", true)
-
-	// 每周重置
-	curtime := util.CURTIME()
-	if util.IsSameWeek(this.GetMoneyCostReset(), curtime) != false {
-		this.SetMoneyCost(0)
-		this.SetMoneyCostReset(util.CURTIME())
-	}
-
-	// 解析概率配置
-	ParseProString := func (sliceweight* []util.WeightOdds, Pro []string) (bool) {
-		for _ , strpro := range Pro {
-			slicepro := strings.Split(strpro, "-")
-			if len(slicepro) != 2 {
-				log.Error("[%d %s] 抽奖异常，解析概率配置异常 strpro=%s", this.Id(), this.Name(), strpro)
-				return false
-			}
-			id    , _ := strconv.ParseInt(slicepro[0], 10, 32)
-			weight, _ := strconv.ParseInt(slicepro[1], 10, 32)
-			*sliceweight = append(*sliceweight, util.WeightOdds{Weight:int32(weight), Uid:int64(id)})
-		}
-		return true
-	}
-
-	giftweight := make([]util.WeightOdds, 0)
-	for _, v := range tbl.GiftProBase.TGiftProById {
-		if this.GetMoneyCost() <= int64(v.Limitmin) {
-			if ParseProString(&giftweight, v.Pro) == false { return }
-			break
-		}
-	}
-
-	//
-	//for k ,v := range tbl.TBallGiftbase.TBallGiftById {
-	//	giftweight = append(giftweight, util.WeightOdds{Weight:v.Pro, Uid:int64(k)})
-	//}
-	index := util.SelectByWeightOdds(giftweight)
-	if index < 0 || index >= int32(len(giftweight)) {
-		log.Error("[%d %s] 抽奖异常，无法获取抽奖id", this.Id(), this.Name())
-		return
-	}
-
-	uid := giftweight[index].Uid
-	gift, find := tbl.TBallGiftbase.TBallGiftById[uint32(uid)]
-	if find == false {
-		log.Error("[%d %s] 无效的奖励id[%d]", this.Id(), this.Name(), uid)
-		return
-	}
-
-	this.AddItem(uint32(gift.ItemId), uint32(gift.Num), "幸运抽奖")
-	drawitem := &msg.LuckyDrawItem{Time:pb.Int64(curtime), Item:pb.Int32(gift.ItemId), Num:pb.Int32(gift.Num), Worth:pb.Int32(gift.Cost)}
-	this.luckydraw = append(this.luckydraw, drawitem)
-
-	// feedback
-	send := &msg.GW2C_LuckyDrawHit{Id:pb.Int32(int32(uid))}
-	this.SendMsg(send)
-}
-
-func (this *GateUser) CheckFreePresentMoney(syn bool) {
-	if this.GetMoney() >= uint32(tbl.Game.FreePresentRule.FloorTrigger) {
-		return
-	}
-
-	curtime := util.CURTIME()
-	if this.presentcount >= int32(tbl.Game.FreePresentRule.Count) {
-		if util.IsSameDay(this.presentrecord, curtime) {
-			return
-		}else {
-			this.presentcount = 0;
-		}
-	}
-
-	money := tbl.Game.FreePresentRule.Money
-	this.AddMoney(uint32(money), "每日免费赠送", syn)
-	this.presentcount += 1
-	this.presentrecord = curtime
-
-	// 客户端界面展示
-	send := &msg.GW2C_FreePresentNotify{Money:pb.Int32(int32(money))}
-	this.SendMsg(send)
-}
-
 

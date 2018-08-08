@@ -87,7 +87,8 @@
         "FinanceQuery":"https://open.yx.tvyouxuan.com/public/finance/Query",
         "DecrCoins":"https://open.yx.tvyouxuan.com/public/finance/DecrCoins",
         "IncrDiamonds":"https://open.yx.tvyouxuan.com/public/finance/IncrDiamonds",
-        "CheckWechatBound":"https://open.yx.tvyouxuan.com/public/user/CheckWechatBound"
+        "CheckWechatBound":"https://open.yx.tvyouxuan.com/public/user/CheckWechatBound",
+        "IncrGolds":"https://open.yx.tvyouxuan.com/public/finance/IncrCoins"
     },
 
     "//":"内网标记",

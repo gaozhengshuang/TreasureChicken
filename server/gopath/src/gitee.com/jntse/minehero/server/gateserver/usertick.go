@@ -60,12 +60,6 @@ func (this *GateUser) OnTicker10ms(now int64) {
 }
 
 func (this *GateUser) OnTicker100ms(now int64) {
-	if len(this.broadcastbuffer) != 0 {
-		uuid := this.broadcastbuffer[0]
-		msg  := UserMgr().PickBroadcastMsg(uuid)
-		if msg != nil { this.SendMsg(msg) }
-		this.broadcastbuffer= this.broadcastbuffer[1:]
-	}
 	this.CheckOffline(now)
 	this.CheckDisconnectTimeOut(now)
 }

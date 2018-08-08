@@ -5,7 +5,6 @@ import (
 	"strconv"
 	"crypto/md5"
 	"encoding/json"
-	"encoding/xml"
 	"sort"
 	"fmt"
 	"time"
@@ -672,7 +671,7 @@ func HttpRequestIncrDiamonds(charid uint64, token, tvmid string, count int32, de
 	url := tbl.Global.HongBaoAPI.IncrDiamonds
 	secret := tbl.Global.HongBaoAPI.Secret
 	key := tbl.Global.HongBaoAPI.Key
-	order_id := strconv.FormatInt(int64(charid),10) + "_incrdiamonds_" + strconv.FormatInt(util.CURTIMEUS(), 10)
+	order_id := strconv.FormatInt(int64(charid),10) + "_incdian_" + strconv.FormatInt(util.CURTIME(), 10)
 	mapset := make(map[string]interface{})
 	mapset["token"] = token
 	mapset["tvmid"] = tvmid
@@ -725,6 +724,66 @@ func HttpRequestIncrDiamonds(charid uint64, token, tvmid string, count int32, de
 	return true
 }
 
+// 增加金币，需要绑定微信号
+func HttpRequestIncrCoins(charid uint64, token, tvmid string, count int32, desc string) bool {
+
+	//url := "https://open.yx.tvyouxuan.com/public/finance/IncrDiamonds"
+	//url := "http://open.std.tvmopt.com/public/finance/IncrDiamonds"
+	url := tbl.Global.HongBaoAPI.IncrGolds
+	secret := tbl.Global.HongBaoAPI.Secret
+	key := tbl.Global.HongBaoAPI.Key
+	order_id := strconv.FormatInt(int64(charid),10) + "_incrcoin_" + strconv.FormatInt(util.CURTIMEMS(), 10)
+	mapset := make(map[string]interface{})
+	mapset["token"] = token
+	mapset["tvmid"] = tvmid
+	mapset["timestamp"] = util.CURTIME()
+	mapset["key"] = key
+	mapset["nonce"] = strconv.FormatInt(util.CURTIMEUS(), 10)
+	mapset["order_id"] = order_id
+	mapset["amount"] = int64(count)
+	mapset["description"] = desc
+
+	// 除公共参数以外的内容，按键从小到大排序，将值拼接
+	sortKeys := make(sort.StringSlice,0)
+	sortKeys = append(sortKeys, "tvmid")
+	sortKeys = append(sortKeys, "token")
+	sortKeys = append(sortKeys, "order_id")
+	sortKeys = append(sortKeys, "amount")
+	sortKeys = append(sortKeys, "description")
+	sortKeys.Sort()
+	sortVal := ""
+	for _, v := range sortKeys {
+		if str, ok := mapset[v].(string); ok == true {
+			sortVal += str
+		}else if num, ok := mapset[v].(int64); ok == true {
+			sortVal += strconv.FormatInt(num, 10)
+		}else {
+			log.Error("签名拼接参数[%s]的类型不是int64或者string", v )
+			return false
+		}
+	}
+
+	errcode, resp := HttpPostDataStatistics(charid, mapset, sortVal, tvmid, url, secret, "增加平台金币")
+	if errcode != "" || resp == nil {
+		return false
+	}
+
+	// check status
+	var respinfo map[string]interface{}
+	unerr := json.Unmarshal(resp.Body, &respinfo)
+	if unerr != nil {
+		log.Info("玩家[%d] 增加平台金币 json.Unmarshal 'status' Fail[%s] ", charid, unerr)
+		return false
+	}
+
+	var statuscode int32 = int32(respinfo["status"].(float64))
+	if statuscode != 0 {
+		log.Error("玩家[%d] 增加平台金币 status[%d] msg[%s]", charid, statuscode, respinfo["msg"])
+		return false
+	}
+
+	return true
+}
 
 // 检查是否绑定微信
 func HttpRequestCheckWechatBound(charid uint64, token, tvmid string) {
@@ -760,115 +819,4 @@ func HttpRequestCheckWechatBound(charid uint64, token, tvmid string) {
 
 	HttpPostDataStatistics(charid, mapset, sortVal, tvmid, url, secret, "检查绑定微信")
 }
-
-// 企业微信支付到个人
-func HttpWechatCompanyPay(openid string, amount int64) string {
-	if openid == "" {
-		return "玩家微信openid是空"
-	}
-
-	//
-	mapset := make(map[string]interface{})
-	mapset["mch_appid"] = tbl.Global.Wechat.AppID
-	mapset["mchid"] = tbl.Global.Wechat.Mchid
-	//mapset["device_info"] = ""
-	mapset["nonce_str"] = strconv.FormatInt(util.CURTIMEUS(), 10)
-	mapset["partner_trade_no"] = strconv.FormatInt(util.CURTIMEUS(), 10)
-	mapset["openid"] = openid
-	mapset["check_name"] = "NO_CHECK"
-	//mapset["re_user_name"] = ""
-	mapset["amount"] = amount
-	mapset["desc"] = "巨枫用户奖励"
-	mapset["spbill_create_ip"] = "127.0.0.1"
-	mapset["sign"] = ""
-
-	//
-	sortKeys := make(sort.StringSlice,0)
-	sortKeys = append(sortKeys, "mch_appid")
-	sortKeys = append(sortKeys, "mchid")
-	sortKeys = append(sortKeys, "nonce_str")
-	sortKeys = append(sortKeys, "partner_trade_no")
-	sortKeys = append(sortKeys, "openid")
-	sortKeys = append(sortKeys, "check_name")
-	sortKeys = append(sortKeys, "amount")
-	sortKeys = append(sortKeys, "desc")
-	sortKeys = append(sortKeys, "spbill_create_ip")
-	sortKeys.Sort()
-
-	sortVal := ""
-	for _, v := range sortKeys {
-		if sortVal != "" { sortVal += "&" }
-		if str, ok := mapset[v].(string); ok == true {
-			keypair := v + "=" + str
-			sortVal += keypair
-		}else if num, ok := mapset[v].(int64); ok == true {
-			keypair := v + "=" + strconv.FormatInt(num, 10)
-			sortVal += keypair
-		}else {
-			log.Error("签名拼接参数[%s]的类型不是int64或者string", v )
-			return "签名拼接参数失败"
-		}
-	}
-
-	stringSignTemp := sortVal + "&key=" + tbl.Global.Wechat.PaySecret
-	sign, md5string := "", util.MD5(stringSignTemp)
-	sign = strings.ToUpper(md5string)
-	//sign = util.SHA256(sign)	// HMAC-SHA256签名方式
-	mapset["sign"] = sign
-
-	//
-	type OrderWechatPay struct {
-		XMLName   xml.Name 		`xml:"xml"`
-		Mch_appid 	string		`xml:"mch_appid"`
-		Mchid		string   	`xml:"mchid"`
-		Nonce_str	string   	`xml:"nonce_str"`
-		Partner_trade_no string	`xml:"partner_trade_no"`
-		Openid 		string		`xml:"openid"`
-		Check_name 	string		`xml:"check_name"`
-		Amount 		int64 		`xml:"amount"`
-		Desc 		string 		`xml:"desc"`
-		Spbill_create_ip string `xml:"spbill_create_ip"`
-		Sign		string		`xml:"sign"`
-	}
-
-	order := &OrderWechatPay{}
-	order.Mch_appid = mapset["mch_appid"].(string)
-	order.Mchid = mapset["mchid"].(string)
-	order.Nonce_str = mapset["nonce_str"].(string)
-	order.Partner_trade_no = mapset["partner_trade_no"].(string)
-	order.Openid = mapset["openid"].(string)
-	order.Check_name = mapset["check_name"].(string)
-	order.Amount = mapset["amount"].(int64)
-	order.Desc = mapset["desc"].(string)
-	order.Spbill_create_ip = mapset["spbill_create_ip"].(string)
-	order.Sign = mapset["sign"].(string)
-
-	//
-	postbody, xmlerr := xml.MarshalIndent(order, "", "   ")
-	if xmlerr != nil {
-		log.Error("玩家[%s] xml.Marshal err[%s]", openid, xmlerr)
-		return "xml.Marshal Fail"
-	}
-	log.Trace("玩家[%s] postbody=\n%s", openid, util.BytesToString(postbody))
-
-	// post
-	url := "https://api.mch.weixin.qq.com/mmpaymkttransfers/promotion/transfers"
-	caCert := "../cert/wechat/cacert.pem"
-	certFile := "../cert/wechat/apiclient_cert.pem"
-	certKey := "../cert/wechat/apiclient_key.pem"
-	resp, posterr := network.HttpsPost(url, caCert, certFile, certKey, util.BytesToString(postbody))
-	if posterr != nil {
-		log.Error("玩家[%s] 推送失败 error[%s] resp[%#v]", openid, posterr, resp)
-		return "HttpPost失败"
-	}
-
-	// response
-	if resp.Code != http.StatusOK { 
-		log.Info("玩家[%s] 推送失败 errcode[%d] status[%s]", openid, resp.Code, resp.Status)
-		return "HttpPost ErrorCode"
-	}
-	log.Trace("玩家[%s] 推送完成 resp.body=\n%s", openid, util.BytesToString(resp.Body))
-	return ""
-}
-
 

@@ -12,7 +12,7 @@ import (
 	"gitee.com/jntse/gotoolkit/util"
 	"gitee.com/jntse/minehero/pbmsg"
 	"gitee.com/jntse/minehero/server/tbl"
-	pb "github.com/gogo/protobuf/proto"
+	pb "github.com/golang/protobuf/proto"
 )
 
 func HttpServerResponseCallBack(w http.ResponseWriter, urlpath string, rawquery string, body []byte) {
