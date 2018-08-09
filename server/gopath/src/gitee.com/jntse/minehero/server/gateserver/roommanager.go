@@ -188,7 +188,7 @@ func (this *RoomAgent) Tick() bool{
         for k, v := range this.robotmap {
             if int32(util.CURTIME()) == v {
                 member := &msg.RoomMemberInfo{Uid : pb.Int64(int64(k)), Name : pb.String(GateSvr().GetRandNickName()), Answer : pb.Int32(util.RandBetween(1,2))}
-                this.AddMember(member, 1000)                
+                this.AddMember(member, int32(tbl.Global.Gametype[this.gametype]))                
             }
         }
     }
@@ -382,10 +382,10 @@ func (this *RoomSvrManager) GetNotFullRoom(gtype int32) *RoomAgent{
     curid := int64(gtype) * 1000000000 + this.curidmap[gtype]
     room := this.FindRoom(curid)
     if room == nil {
-        return this.AddNew(curid, gtype)       
+        return this.AddNew(curid, gtype-1)       
     } else {
         if room.IsStart() {
-            return this.AddNew(curid+1, gtype)
+            return this.AddNew(curid+1, gtype-1)
         } else {
             return room
         }
@@ -408,6 +408,8 @@ func (this *RoomSvrManager) JoinGame(user *GateUser, gtype int32) {
     user.roomid = room.Id()
     member := &msg.RoomMemberInfo{Uid : pb.Int64(int64(user.Id())), Name : pb.String(user.Name()), Answer : pb.Int32(util.RandBetween(1,2))}
     room.AddMember(member, int32(tbl.Global.Gametype[gtype]))
+
+    room.UpdateOne(int64(user.Id()))
 
     send := &msg.GW2C_JoinOk{}
     send.Starttime = pb.Int32(room.starttime)
