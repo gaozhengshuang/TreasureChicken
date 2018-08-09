@@ -408,6 +408,11 @@ func (this *GateUser) Syn() {
 	this.SendUserBase()
 	this.CheckHaveCompensation()
 	this.QueryPlatformCoins()
+
+    send := &msg.GW2C_HeartBeat{}
+    send.Uid = pb.Int64(int64(this.Id()))
+    send.Time = pb.Int64(util.CURTIMEUS())
+    this.SendMsg(send)
 }
 
 // 断开连接回调
@@ -477,6 +482,7 @@ func (this *GateUser) CheckDisconnectTimeOut(now int64) {
 
 // 真下线(存盘，从Gate清理玩家数据)
 func (this *GateUser) Logout() {
+    RoomSvrMgr().LeaveGame(this)
 	this.online = false
 	this.tm_logout = util.CURTIME()
 	this.cleanup = true

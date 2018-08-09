@@ -87,6 +87,7 @@ func (this* C2GWMsgHandler) Init() {
     this.msgparser.RegistSendProto(msg.GW2C_QuestionInfo{})
     this.msgparser.RegistSendProto(msg.GW2C_AnswerInfo{})
     this.msgparser.RegistSendProto(msg.GW2C_GameOver{})
+    this.msgparser.RegistSendProto(msg.GW2C_JoinOk{})
 
 	// Room
 	this.msgparser.RegistSendProto(msg.BT_GameInit{})
