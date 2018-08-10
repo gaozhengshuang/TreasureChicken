@@ -89,9 +89,15 @@ func (this *RoomAgent) AddMember(member *msg.RoomMemberInfo, cost int32) bool{
     _, ok := this.members[member.GetUid()]
     if !ok {
         this.members[member.GetUid()] = member
+        cost = cost * (100 - int32(tbl.Global.Gamerewardper)) / 100        
         this.sumreward += cost
         this.updateflag = true
-        //this.UpdateOne(member.GetUid())
+        this.UpdateOne(member.GetUid())
+
+        send := &msg.GW2C_JoinOk{}
+        send.Starttime = pb.Int32(this.starttime)
+        this.SendMsgById(send, member.GetUid())
+
         log.Info("房间[%d] 玩家[%d]进入房间, 总奖池[%d]", this.Id(), member.GetUid(), this.sumreward)
         return true
     }
@@ -116,18 +122,6 @@ func (this *RoomAgent) DelMember(uid int64) bool{
         return true
     }
     return false
-}
-
-func (this *RoomAgent) RemoveCoins() {
-    for _, v := range this.members {
-        if v.GetUid() < 100 {
-            continue
-        }
-        user := UserMgr().FindById(uint64(v.GetUid()))
-        if user != nil {
-            user.RemoveYuanbao(uint32(this.cost), "参加答题游戏扣除")
-        }       
-    }
 }
 
 func (this *RoomAgent) AnswerQuestion(uid int64, answer int32){
@@ -223,7 +217,6 @@ func (this *RoomAgent) DoingGame(){
     switch (this.answerstatus){
         case 0:
             this.SendStart()
-            this.RemoveCoins()
             this.ChangeStatus(1)
         case 1:
             if this.waittime > 0 {
@@ -275,12 +268,17 @@ func (this *RoomAgent) SendQuestion(round int32){
         return
     }
     this.curanswer = qconfig.Answer
-    send := &msg.GW2C_QuestionInfo{Txt : pb.String(qconfig.Question), Round : pb.Int32(round+1), Time : pb.Int32(int32(util.CURTIME())+int32(tbl.Global.Gameroundtime))}
+    send := &msg.GW2C_QuestionInfo{
+        Txt : pb.String(qconfig.Question), 
+        Round : pb.Int32(round+1), 
+        Time : pb.Int32(int32(util.CURTIME())+int32(tbl.Global.Gameroundtime)),
+        Left : pb.Int32(int32(tbl.Global.Gameroundcount)-round),
+    }
     this.SendToAllMsg(send)
     log.Info("房间[%d] 当前轮数[%d] 发送题目[%d][%s], 答案:%d", this.Id(), round+1, qconfig.Id, qconfig.Question, qconfig.Answer)
     for i := 1; i <= int(tbl.Global.Gamerobotnum); i++ {
         this.AnswerQuestion(int64(i), util.RandBetween(1,2))
-        this.robottick[int64(i)] = util.RandBetween(2,6)
+        this.robottick[int64(i)] = util.RandBetween(3,7)
     }
 
 }
@@ -312,15 +310,19 @@ func (this *RoomAgent) GiveReward(){
         return
     }
     reward := this.sumreward / int32(len(this.members))
-    reward = reward * (100 - int32(tbl.Global.Gamerewardper)) / 100
+    //reward = reward * (100 - int32(tbl.Global.Gamerewardper)) / 100
     send := &msg.GW2C_GameOver{Reward : pb.Int32(reward)}
     for k, _ := range this.members{
+        if k <= 100{
+            continue
+        }
         user := UserMgr().FindById(uint64(k))
         if user != nil {
-            user.AddYuanbao(uint32(reward), "答题结束获得奖励")
+            event := NewAddPlatformCoinsEvent(int32(reward), "红包答题增加金币", user.AddPlatformCoins)
+            user.AsynEventInsert(event)
         }
         this.SendMsgById(send, k)
-        log.Info("房间[%d] 发放奖励[%d]给玩家[%d], ", this.Id(), reward, k)
+        log.Info("房间[%d] 发放金币奖励[%d]给玩家[%d], ", this.Id(), reward, k)
     }
 }
 
@@ -382,7 +384,6 @@ func (this *RoomSvrManager) OnClose(uid int64) {
 
 func (this *RoomSvrManager) AddNew(id int64, gtype int32) *RoomAgent{
 	agent := NewRoomAgent(id, gtype)
-    this.curidmap[gtype] = id % 1000000000
 	this.AddRoom(agent)
 	log.Info("注册房间 id=%d 当前总数:%d", agent.Id(), RoomSvrMgr().Num())
     return agent
@@ -391,6 +392,7 @@ func (this *RoomSvrManager) AddNew(id int64, gtype int32) *RoomAgent{
 func (this *RoomSvrManager) GetNotFullRoom(gtype int32) *RoomAgent{
     gtype = gtype + 1
     curid := int64(gtype) * 1000000000 + this.curidmap[gtype]
+    this.curidmap[gtype]++
     room := this.FindRoom(curid)
     if room == nil {
         return this.AddNew(curid, gtype-1)       
@@ -404,6 +406,10 @@ func (this *RoomSvrManager) GetNotFullRoom(gtype int32) *RoomAgent{
 }
 
 func (this *RoomSvrManager) JoinGame(user *GateUser, gtype int32) {
+    if user.roomid != 0 {
+        return
+    }
+
     if int(gtype) > len(tbl.Global.Gametype){
         return
     }
@@ -412,6 +418,14 @@ func (this *RoomSvrManager) JoinGame(user *GateUser, gtype int32) {
         return
     }
 
+    user.RemoveYuanbao(uint32(tbl.Global.Gametype[gtype]), "参加游戏")
+    this.JoinGameOk(user, gtype)
+
+    //event := NewRemovePlatformCoinsEvent(int32(tbl.Global.Gametype[gtype]), 0, "红包答题扣除金币", user.RemovePlatformCoins, user.RemoveCoinsOk)
+    //user.AsynEventInsert(event)
+}
+
+func (this *RoomSvrManager) JoinGameOk(user *GateUser, gtype int32) {
     room := this.GetNotFullRoom(gtype)
     if room == nil {
         return
@@ -419,14 +433,6 @@ func (this *RoomSvrManager) JoinGame(user *GateUser, gtype int32) {
     user.roomid = room.Id()
     member := &msg.RoomMemberInfo{Uid : pb.Int64(int64(user.Id())), Name : pb.String(user.Name()), Answer : pb.Int32(util.RandBetween(1,2))}
     room.AddMember(member, int32(tbl.Global.Gametype[gtype]))
-
-    room.UpdateOne(int64(user.Id()))
-
-    send := &msg.GW2C_JoinOk{}
-    send.Starttime = pb.Int32(room.starttime)
-    user.SendMsg(send) 
-
-    log.Info("玩家[%d] 参加答题游戏, 房间号为:%d", user.Id(), user.roomid)
 }
 
 func (this *RoomSvrManager) AnswerQuestion(user *GateUser, answer int32) {
