@@ -606,3 +606,16 @@ func (this *GateUser) DeliveryState() bool {
 	return this.deliverystate
 }
 
+func (this *GateUser) RemoveCoinsOk (removeok bool, cost int32, uid int32){
+    if removeok == false {
+        return
+    }
+    var gtype int32
+    if cost == 1000 {
+        gtype = 1
+    }else{
+        gtype = 0
+    }
+    RoomSvrMgr().JoinGameOk(this, gtype)    
+}
+
