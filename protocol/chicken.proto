@@ -46,6 +46,11 @@ message C2GW_Answer
     optional int32 answer = 1;     //1是对  2是错
 }
 
+message GW2C_AnswerOk
+{
+    optional int32 answer = 1;      //1是对 2是错
+}
+
 //删除失败的玩家
 message GW2C_AnswerInfo
 {
