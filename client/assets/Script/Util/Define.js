@@ -15,6 +15,7 @@ var Define = {
         ROOMINFO_UPDATEQUESTION: '203',
         ROOMINFO_UPDATEANSWER: '204',
         ROOMINFO_GAMEOVER: '205',
+        USERINFO_UPDATEYUANBAO: '206',
 
         NET_OPEN: '300',
         NET_CLOSE: '301',

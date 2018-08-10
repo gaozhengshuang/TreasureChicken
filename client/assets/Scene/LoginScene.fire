@@ -93,8 +93,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 640,
-      "height": 1136
+      "width": 720,
+      "height": 1100
     },
     "_rotationX": 0,
     "_rotationY": 0,
@@ -102,8 +102,8 @@
     "_scaleY": 1,
     "_position": {
       "__type__": "cc.Vec2",
-      "x": 320,
-      "y": 568
+      "x": 360,
+      "y": 550
     },
     "_skewX": 0,
     "_skewY": 0,
@@ -145,8 +145,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 640,
-      "height": 1136
+      "width": 720,
+      "height": 1100
     },
     "_rotationX": 0,
     "_rotationY": 0,
@@ -223,7 +223,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 240,
+      "width": 180,
       "height": 40
     },
     "_rotationX": 0,
@@ -232,8 +232,8 @@
     "_scaleY": 1,
     "_position": {
       "__type__": "cc.Vec2",
-      "x": 28,
-      "y": 68
+      "x": 45,
+      "y": 140
     },
     "_skewX": 0,
     "_skewY": 0,
@@ -257,9 +257,7 @@
     "textChanged": [],
     "editingDidEnded": [],
     "editingReturn": [],
-    "_N$backgroundImage": {
-      "__uuid__": "67e68bc9-dad5-4ad9-a2d8-7e03d458e32f"
-    },
+    "_N$backgroundImage": null,
     "_N$returnType": 0,
     "_N$inputFlag": 5,
     "_N$inputMode": 6,
@@ -276,9 +274,9 @@
     "_N$placeholderFontSize": 20,
     "_N$placeholderFontColor": {
       "__type__": "cc.Color",
-      "r": 127,
-      "g": 127,
-      "b": 127,
+      "r": 255,
+      "g": 255,
+      "b": 255,
       "a": 255
     },
     "_N$maxLength": 8,
@@ -330,7 +328,7 @@
     "_position": {
       "__type__": "cc.Vec2",
       "x": 0,
-      "y": -75.3
+      "y": 0
     },
     "_skewX": 0,
     "_skewY": 0,
@@ -450,10 +448,10 @@
     "_enabled": true,
     "_designResolution": {
       "__type__": "cc.Size",
-      "width": 640,
-      "height": 1136
+      "width": 720,
+      "height": 1100
     },
-    "_fitWidth": true,
+    "_fitWidth": false,
     "_fitHeight": true
   },
   {

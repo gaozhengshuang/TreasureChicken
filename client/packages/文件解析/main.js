@@ -17,7 +17,7 @@ module.exports = {
         'genJson'() {
             // open entry panel registered in package.json
             Editor.log('开始生成JSON');
-            let sourcePath = __dirname + '\\..\\..\\..\\docs\\tbl\\*.json';
+            let sourcePath = __dirname + '\\..\\..\\..\\docs\\tbl\\proto_index.json';
             let targetFile = __dirname + '\\..\\..\\assets\\resources\\Json\\';
             let cmd = 'copy ' + sourcePath + ' ' + targetFile;
             process.exec(cmd, function (err, stdout, stderr) {

@@ -17,6 +17,7 @@ UserModel.prototype.Init = function (cb) {
     NetWorkController.AddListener('msg.GW2C_SendUserPlatformMoney', this, this.onGW2C_SendUserPlatformMoney);
     NetWorkController.AddListener('msg.GW2C_RetDeliveryDiamond', this, this.onGW2C_RetDeliveryDiamond);
     NetWorkController.AddListener('msg.GW2C_UpdateGold', this, this.onGW2C_UpdateGold);
+    NetWorkController.AddListener('msg.GW2C_UpdateYuanbao', this, this.onGW2C_UpdateYuanbao);
 
     Tools.InvokeCallback(cb);
 }
@@ -65,6 +66,14 @@ UserModel.prototype.GetPlayerGoods = function (cb) {
         }
     });
 }
+UserModel.prototype.GetCostCurrency = function () {
+    if (Platform.PLATFORM == 'Normal') {
+        return Tools.GetValueInObj(this.userInfo, 'base.yuanbao') || 0;
+    } else {
+        return this.platformCoins || 0;
+    }
+    // return 1000000;
+}
 UserModel.prototype.GetMoney = function () {
     return Tools.GetValueInObj(this.userInfo, 'base.money') || 0;
 }
@@ -88,7 +97,10 @@ UserModel.prototype.onGW2C_SendUserPlatformMoney = function (msgid, data) {
     this.platformCoins = data.coins || 0;
     NotificationController.Emit(Define.EVENT_KEY.USERINFO_UPDATECOINS, this.platformCoins);
 }
-
+UserModel.prototype.onGW2C_UpdateYuanbao = function (msgid, data) {
+    this.userInfo.base.yuanbao = data.num;
+    NotificationController.Emit(Define.EVENT_KEY.USERINFO_UPDATEYUANBAO);
+}
 UserModel.prototype.onGW2C_RetDeliveryDiamond = function (msgid, data) {
     let content = '提取钻石:' + data.diamond + '个，提取钻石券:' + data.diamondparts + '个，折算钻石' + (data.total - data.diamond) +
         '个，本次共提取钻石' + data.total + '个';

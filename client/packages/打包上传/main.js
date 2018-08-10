@@ -26,7 +26,7 @@ module.exports = {
                     conn.on('ready', function () {
                         Editor.log('ssh 连接成功');
 
-                        conn.exec('rm -rf /var/www/html/supermarttest/*', function (err, stream) {
+                        conn.exec('rm -rf /var/www/html/chickentest/*', function (err, stream) {
                             if (err) {
                                 anext(err);
                             }
@@ -43,10 +43,10 @@ module.exports = {
 
 
                     }).connect({
-                        host: '210.73.214.68',
+                        host: '210.73.214.67',
                         port: 22,
-                        username: 'LiuKai',
-                        password: 'Linanana456'
+                        username: 'gaozhengshuang',
+                        password: 'EJeRXDPkA8'
                     });
                 },
                 function (anext) {
@@ -54,10 +54,10 @@ module.exports = {
                     let sourcePath = path.join(__dirname, '../../build/web-mobile');
                     Editor.log(sourcePath);
                     client.scp(sourcePath, {
-                        host: '210.73.214.68',
-                        username: 'LiuKai',
-                        password: 'Linanana456',
-                        path: '/var/www/html/supermarttest/'
+                        host: '210.73.214.67',
+                        username: 'gaozhengshuang',
+                        password: 'EJeRXDPkA8',
+                        path: '/var/www/html/chickentest/'
                     }, function (err) {
                         anext(err);
                     });
@@ -79,7 +79,7 @@ module.exports = {
                     conn.on('ready', function () {
                         Editor.log('ssh 连接成功');
 
-                        conn.exec('rm -rf /var/www/html/supermarttvtest/*', function (err, stream) {
+                        conn.exec('rm -rf /var/www/html/chickentest/*', function (err, stream) {
                             if (err) {
                                 anext(err);
                             }
@@ -96,10 +96,10 @@ module.exports = {
 
 
                     }).connect({
-                        host: '210.73.214.68',
+                        host: '210.73.214.67',
                         port: 22,
-                        username: 'LiuKai',
-                        password: 'Linanana456'
+                        username: 'gaozhengshuang',
+                        password: 'EJeRXDPkA8'
                     });
                 },
                 function (anext) {
@@ -107,10 +107,10 @@ module.exports = {
                     let sourcePath = path.join(__dirname, '../../build/web-mobile');
                     Editor.log(sourcePath);
                     client.scp(sourcePath, {
-                        host: '210.73.214.68',
-                        username: 'LiuKai',
-                        password: 'Linanana456',
-                        path: '/var/www/html/supermarttvtest/'
+                        host: '210.73.214.67',
+                        username: 'gaozhengshuang',
+                        password: 'EJeRXDPkA8',
+                        path: '/var/www/html/chickentest/'
                     }, function (err) {
                         anext(err);
                     });
@@ -119,10 +119,10 @@ module.exports = {
                     Editor.log('开始上传 ' + moment().format('YYYY-MM-DD hh:mm:ss'));
                     let sourceBgPath = path.join(__dirname, '../../assets/resources/Image/BackGround/loading_bg.jpg');
                     client.scp(sourceBgPath, {
-                        host: '210.73.214.68',
-                        username: 'LiuKai',
-                        password: 'Linanana456',
-                        path: '/var/www/html/supermarttvtest/'
+                        host: '210.73.214.67',
+                        username: 'gaozhengshuang',
+                        password: 'EJeRXDPkA8',
+                        path: '/var/www/html/chickentest/'
                     }, function (err) {
                         anext(err);
                     });
@@ -143,7 +143,7 @@ module.exports = {
                     conn.on('ready', function () {
                         Editor.log('ssh 连接成功');
 
-                        conn.exec('rm -rf /var/www/html/supermarttv/*', function (err, stream) {
+                        conn.exec('rm -rf /var/www/html/chickentest/*', function (err, stream) {
                             if (err) {
                                 anext(err);
                             }
@@ -173,7 +173,7 @@ module.exports = {
                         host: '210.73.214.67',
                         username: 'gaozhengshuang',
                         password: 'EJeRXDPkA8',
-                        path: '/var/www/html/supermarttv/'
+                        path: '/var/www/html/chickentest/'
                     }, function (err) {
                         anext(err);
                     });
@@ -185,7 +185,7 @@ module.exports = {
                         host: '210.73.214.67',
                         username: 'gaozhengshuang',
                         password: 'EJeRXDPkA8',
-                        path: '/var/www/html/supermarttv/'
+                        path: '/var/www/html/chickentest/'
                     }, function (err) {
                         anext(err);
                     });

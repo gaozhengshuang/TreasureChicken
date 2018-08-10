@@ -13,7 +13,8 @@ cc.Class({
         playerInfo: { default: null },
         playerSkeleton: { default: null, type: sp.Skeleton },
         playerSprite: { default: null, type: cc.Sprite },
-        playerHeadNode: { default: null, type: cc.Node }
+        playerHeadNode: { default: null, type: cc.Node },
+        playerNameLabel: { default: null, type: cc.Label }
     },
 
     onLoad() {
@@ -32,6 +33,7 @@ cc.Class({
 
     UpdateInfo(info, userHeadUrl) {
         this.playerInfo = info;
+        this.playerNameLabel.string = info.name;
         this.playerHeadNode.active = (userHeadUrl != null);
         if (userHeadUrl != null) {
             cc.loader.load(userHeadUrl, function (err, res) {
@@ -47,12 +49,6 @@ cc.Class({
         this.playerSkeleton.setAnimation(0, 'run1', true);
     },
     _playDieAction(callback) {
-        this.playerSkeleton.setAnimation(0, 'dead2', false);
-        this.node.runAction(cc.sequence([
-            cc.moveBy(3, 0, 1100),
-            cc.callFunc(function () {
-                Game.Tools.InvokeCallback(callback);
-            }, this)
-        ]));
+        this.playerSkeleton.setAnimation(0, 'dead3', false);
     }
 });

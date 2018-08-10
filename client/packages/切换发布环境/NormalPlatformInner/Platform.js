@@ -3,7 +3,7 @@ var Platform = {
     GOODSPATH: 'http://logistics.giantfun.cn:8083/v1/logistics/query',
     FIGHT_COST: 1999,
     LoginHost: '192.168.30.202',
-    LoginPort: 7020,
+    LoginPort: 17020,
     LoginSuffix: 'ws_handler'
 }
 

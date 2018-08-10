@@ -26,10 +26,11 @@
         100,1000,3000
     ],
     "gamewaittime":10,
-    "gamemaxmember":30,
+    "gamemaxmember":50,
     "gameroundtime":7,
-    "gameroundcount":3,
-    "gamerobotnum":10,
+    "gameroundcount":5,
+    "gamerobotnum":30,
+    "gamerewardper":10,
 
     "//":"断开连接多久清理玩家,毫秒",
     "disconclean":0,
@@ -41,7 +42,7 @@
 
     "//":"新玩家初始数据，元宝，金卷",
     "newuser": {
-        "yuanbao": 0,
+        "yuanbao": 100000,
         "coupon": 0 
     },
 

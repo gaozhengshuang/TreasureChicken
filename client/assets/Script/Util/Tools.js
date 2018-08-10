@@ -60,6 +60,9 @@ let Tools = {
     },
     GetMilliSecond: function () {
         return moment().unix() * 1000 + moment().milliseconds();
+    },
+    GetPercent: function (start, end, value) {
+        return (value - start) / (end - start);
     }
 }
 

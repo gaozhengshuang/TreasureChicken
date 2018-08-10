@@ -8049,6 +8049,7 @@ $root.msg = (function() {
          * @property {string|null} [txt] GW2C_QuestionInfo txt
          * @property {number|null} [round] GW2C_QuestionInfo round
          * @property {number|null} [time] GW2C_QuestionInfo time
+         * @property {number|null} [left] GW2C_QuestionInfo left
          */
 
         /**
@@ -8091,6 +8092,14 @@ $root.msg = (function() {
         GW2C_QuestionInfo.prototype.time = 0;
 
         /**
+         * GW2C_QuestionInfo left.
+         * @member {number} left
+         * @memberof msg.GW2C_QuestionInfo
+         * @instance
+         */
+        GW2C_QuestionInfo.prototype.left = 0;
+
+        /**
          * Creates a new GW2C_QuestionInfo instance using the specified properties.
          * @function create
          * @memberof msg.GW2C_QuestionInfo
@@ -8120,6 +8129,8 @@ $root.msg = (function() {
                 writer.uint32(/* id 2, wireType 0 =*/16).int32(message.round);
             if (message.time != null && message.hasOwnProperty("time"))
                 writer.uint32(/* id 3, wireType 0 =*/24).int32(message.time);
+            if (message.left != null && message.hasOwnProperty("left"))
+                writer.uint32(/* id 4, wireType 0 =*/32).int32(message.left);
             return writer;
         };
 
@@ -8162,6 +8173,9 @@ $root.msg = (function() {
                     break;
                 case 3:
                     message.time = reader.int32();
+                    break;
+                case 4:
+                    message.left = reader.int32();
                     break;
                 default:
                     reader.skipType(tag & 7);
@@ -8207,6 +8221,9 @@ $root.msg = (function() {
             if (message.time != null && message.hasOwnProperty("time"))
                 if (!$util.isInteger(message.time))
                     return "time: integer expected";
+            if (message.left != null && message.hasOwnProperty("left"))
+                if (!$util.isInteger(message.left))
+                    return "left: integer expected";
             return null;
         };
 
@@ -8228,6 +8245,8 @@ $root.msg = (function() {
                 message.round = object.round | 0;
             if (object.time != null)
                 message.time = object.time | 0;
+            if (object.left != null)
+                message.left = object.left | 0;
             return message;
         };
 
@@ -8248,6 +8267,7 @@ $root.msg = (function() {
                 object.txt = "";
                 object.round = 0;
                 object.time = 0;
+                object.left = 0;
             }
             if (message.txt != null && message.hasOwnProperty("txt"))
                 object.txt = message.txt;
@@ -8255,6 +8275,8 @@ $root.msg = (function() {
                 object.round = message.round;
             if (message.time != null && message.hasOwnProperty("time"))
                 object.time = message.time;
+            if (message.left != null && message.hasOwnProperty("left"))
+                object.left = message.left;
             return object;
         };
 
@@ -8457,6 +8479,193 @@ $root.msg = (function() {
         };
 
         return C2GW_Answer;
+    })();
+
+    msg.GW2C_AnswerOk = (function() {
+
+        /**
+         * Properties of a GW2C_AnswerOk.
+         * @memberof msg
+         * @interface IGW2C_AnswerOk
+         * @property {number|null} [answer] GW2C_AnswerOk answer
+         */
+
+        /**
+         * Constructs a new GW2C_AnswerOk.
+         * @memberof msg
+         * @classdesc Represents a GW2C_AnswerOk.
+         * @implements IGW2C_AnswerOk
+         * @constructor
+         * @param {msg.IGW2C_AnswerOk=} [properties] Properties to set
+         */
+        function GW2C_AnswerOk(properties) {
+            if (properties)
+                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * GW2C_AnswerOk answer.
+         * @member {number} answer
+         * @memberof msg.GW2C_AnswerOk
+         * @instance
+         */
+        GW2C_AnswerOk.prototype.answer = 0;
+
+        /**
+         * Creates a new GW2C_AnswerOk instance using the specified properties.
+         * @function create
+         * @memberof msg.GW2C_AnswerOk
+         * @static
+         * @param {msg.IGW2C_AnswerOk=} [properties] Properties to set
+         * @returns {msg.GW2C_AnswerOk} GW2C_AnswerOk instance
+         */
+        GW2C_AnswerOk.create = function create(properties) {
+            return new GW2C_AnswerOk(properties);
+        };
+
+        /**
+         * Encodes the specified GW2C_AnswerOk message. Does not implicitly {@link msg.GW2C_AnswerOk.verify|verify} messages.
+         * @function encode
+         * @memberof msg.GW2C_AnswerOk
+         * @static
+         * @param {msg.IGW2C_AnswerOk} message GW2C_AnswerOk message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        GW2C_AnswerOk.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.answer != null && message.hasOwnProperty("answer"))
+                writer.uint32(/* id 1, wireType 0 =*/8).int32(message.answer);
+            return writer;
+        };
+
+        /**
+         * Encodes the specified GW2C_AnswerOk message, length delimited. Does not implicitly {@link msg.GW2C_AnswerOk.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof msg.GW2C_AnswerOk
+         * @static
+         * @param {msg.IGW2C_AnswerOk} message GW2C_AnswerOk message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        GW2C_AnswerOk.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a GW2C_AnswerOk message from the specified reader or buffer.
+         * @function decode
+         * @memberof msg.GW2C_AnswerOk
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {msg.GW2C_AnswerOk} GW2C_AnswerOk
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        GW2C_AnswerOk.decode = function decode(reader, length) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.msg.GW2C_AnswerOk();
+            while (reader.pos < end) {
+                var tag = reader.uint32();
+                switch (tag >>> 3) {
+                case 1:
+                    message.answer = reader.int32();
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a GW2C_AnswerOk message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof msg.GW2C_AnswerOk
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {msg.GW2C_AnswerOk} GW2C_AnswerOk
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        GW2C_AnswerOk.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a GW2C_AnswerOk message.
+         * @function verify
+         * @memberof msg.GW2C_AnswerOk
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        GW2C_AnswerOk.verify = function verify(message) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.answer != null && message.hasOwnProperty("answer"))
+                if (!$util.isInteger(message.answer))
+                    return "answer: integer expected";
+            return null;
+        };
+
+        /**
+         * Creates a GW2C_AnswerOk message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof msg.GW2C_AnswerOk
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {msg.GW2C_AnswerOk} GW2C_AnswerOk
+         */
+        GW2C_AnswerOk.fromObject = function fromObject(object) {
+            if (object instanceof $root.msg.GW2C_AnswerOk)
+                return object;
+            var message = new $root.msg.GW2C_AnswerOk();
+            if (object.answer != null)
+                message.answer = object.answer | 0;
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a GW2C_AnswerOk message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof msg.GW2C_AnswerOk
+         * @static
+         * @param {msg.GW2C_AnswerOk} message GW2C_AnswerOk
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        GW2C_AnswerOk.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            var object = {};
+            if (options.defaults)
+                object.answer = 0;
+            if (message.answer != null && message.hasOwnProperty("answer"))
+                object.answer = message.answer;
+            return object;
+        };
+
+        /**
+         * Converts this GW2C_AnswerOk to JSON.
+         * @function toJSON
+         * @memberof msg.GW2C_AnswerOk
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        GW2C_AnswerOk.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        return GW2C_AnswerOk;
     })();
 
     msg.GW2C_AnswerInfo = (function() {

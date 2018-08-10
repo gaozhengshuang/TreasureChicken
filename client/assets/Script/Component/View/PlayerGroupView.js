@@ -1,6 +1,6 @@
 let Game = require('../../Game');
 const width = 90;
-const height = 80;
+const height = 60;
 const gridpreline = 3;
 const randomoffset = 7;
 cc.Class({

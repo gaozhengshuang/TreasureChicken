@@ -14,6 +14,7 @@ var RoomModel = function () {
     this.question = '';
     this.answer = 0;
     this.startTime = 0;
+    this.left = 0;
 }
 
 RoomModel.prototype.Init = function (cb) {
@@ -37,6 +38,7 @@ RoomModel.prototype.RestartGame = function () {
     this.question = '';
     this.answer = 0;
     this.startTime = 0;
+    this.left = 0;
 }
 /**
  * 消息处理接口
@@ -46,6 +48,7 @@ RoomModel.prototype.onGW2C_UpdateRoomInfo = function (msgid, data) {
     this.sumreward = data.sumreward;
     let newList = [];
     let updateList = [];
+    let removeList = [];
     for (let i = 0; i < data.members.length; i++) {
         let member = _.cloneDeep(data.members[i]);
         let index = _.findIndex(this.members, { uid: member.uid });
@@ -60,7 +63,12 @@ RoomModel.prototype.onGW2C_UpdateRoomInfo = function (msgid, data) {
             }
         }
     }
-    NotificationController.Emit(Define.EVENT_KEY.ROOMINFO_UPDATEINFO, newList, updateList);
+
+    removeList = _.remove(this.members, function (o) {
+        return _.findIndex(data.members, { uid: o.uid }) == -1;
+    });
+
+    NotificationController.Emit(Define.EVENT_KEY.ROOMINFO_UPDATEINFO, newList, updateList, removeList);
 }
 
 RoomModel.prototype.onGW2C_StartGame = function (msgid, data) {
@@ -71,6 +79,7 @@ RoomModel.prototype.onGW2C_QuestionInfo = function (msgid, data) {
     this.question = data.txt;
     this.round = data.round;
     this.coldDownTime = data.time;
+    this.left = data.left;
     GameController.ChangeState(ChickenDefine.GAME_STATE.STATE_ASKING);
     NotificationController.Emit(Define.EVENT_KEY.ROOMINFO_UPDATEQUESTION);
 
@@ -81,7 +90,7 @@ RoomModel.prototype.onGW2C_AnswerInfo = function (msgid, data) {
     NotificationController.Emit(Define.EVENT_KEY.ROOMINFO_UPDATEANSWER, data.delids || []);
 }
 RoomModel.prototype.onGW2C_GameOver = function (msgid, data) {
-    NotificationController.Emit(Define.EVENT_KEY.ROOMINFO_GAMEOVER);
+    NotificationController.Emit(Define.EVENT_KEY.ROOMINFO_GAMEOVER, data.reward);
 }
 
 RoomModel.prototype.onGW2C_JoinOk = function (msgid, data) {

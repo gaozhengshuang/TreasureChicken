@@ -1,13 +1,14 @@
-let _ = require('lodash');
+import _ from 'lodash';
 
-let Define = require('../Util/Define');
-let Tools = require('../Util/Tools');
-let NotificationController = require('./NotificationController');
+import Define from '../Util/Define';
+import Tools from '../Util/Tools';
+import NotificationController from './NotificationController';
 
 let AudioController = function () {
     this.audioClips = {};
     this.audio = null;
     this.effectIds = [];
+    this.effectCallbacks = {}
     this.disableMusic = cc.sys.localStorage.getItem(Define.DATA_KEY.DISABLE_MUSIC) == 'true';
     this.disableEffect = cc.sys.localStorage.getItem(Define.DATA_KEY.DISABLE_EFFECT) == 'true';
     this.audioName = '';
@@ -28,23 +29,46 @@ AudioController.prototype.Init = function (cb) {
     }.bind(this));
 }
 
-AudioController.prototype.PlayMusic = function (name) {
+AudioController.prototype.PlayMusic = function (name, loop = true) {
     this.audioName = name;
     if (this.disableMusic) {
         return;
     }
-    this.audio = cc.audioEngine.play(this.audioClips[name], true, 1);
+    if (this.audio != null) {
+        cc.audioEngine.stop(this.audio);
+        this.audio = null;
+    }
+    this.audio = cc.audioEngine.play(this.audioClips[name], loop, 1);
     cc.audioEngine.setFinishCallback(this.audio, this._onMusicFinish.bind(this));
 }
 
-AudioController.prototype.PlayEffect = function (name) {
+AudioController.prototype.PlayEffect = function (name, cb) {
     if (this.disableEffect) {
         return;
     }
-    let id = cc.audioEngine.play(this.audioClips[name], false, 2);
+    let id = cc.audioEngine.play(this.audioClips[name], false, 1);
     this.effectIds.push(id);
+    this.effectCallbacks[id] = cb;
     cc.audioEngine.setFinishCallback(id, this._onEffectFinish.bind(this, id));
 };
+
+AudioController.prototype.StopAllEffect = function () {
+    for (let i = 0; i < this.effectIds.length; i++) {
+        cc.audioEngine.stop(this.effectIds[i]);
+    }
+    this.effectIds = [];
+    for (let key in this.effectCallbacks) {
+        let cb = this.effectCallbacks[key];
+        Tools.InvokeCallback(cb);
+    }
+    this.effectCallbacks = {};
+}
+
+AudioController.prototype.SetMusicVolume = function (val) {
+    if (this.audio != null) {
+        cc.audioEngine.setVolume(this.audio, val);
+    }
+}
 
 AudioController.prototype.onChangeMusic = function (disable) {
     this.disableMusic = disable;
@@ -66,6 +90,11 @@ AudioController.prototype.onChangeEffect = function (disable) {
             cc.audioEngine.stop(this.effectIds[i]);
         }
         this.effectIds = [];
+        for (let key in this.effectCallbacks) {
+            let cb = this.effectCallbacks[key];
+            Tools.InvokeCallback(cb);
+        }
+        this.effectCallbacks = {};
     }
 }
 
@@ -78,6 +107,9 @@ AudioController.prototype._onEffectFinish = function (id) {
     _.remove(this.effectIds, function (n) {
         return n == id;
     });
+    let cb = this.effectCallbacks[id];
+    Tools.InvokeCallback(cb);
+    delete this.effectCallbacks[id];
 }
 
 module.exports = new AudioController();

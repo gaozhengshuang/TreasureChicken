@@ -8,6 +8,7 @@ var GameController = function () {
     this.state = 0;
     this.winWidth = 0;
     this.winHeight = 0;
+    this.bets = 0;
 }
 
 GameController.prototype.Init = function (cb) {
@@ -18,6 +19,7 @@ GameController.prototype.Init = function (cb) {
 
 GameController.prototype.RestartGame = function () {
     this.state = ChickenDefine.GAME_STATE.STATE_PENDING;
+    this.bets = 0;
 }
 
 GameController.prototype.ChangeState = function (state) {
