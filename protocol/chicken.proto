@@ -38,6 +38,7 @@ message GW2C_QuestionInfo
     optional string txt = 1;            //问题
     optional int32 round = 2;           //第几轮
     optional int32 time = 3;            //时间
+    optional int32 left = 4;            //剩余几题
 }
 
 //回答问题
