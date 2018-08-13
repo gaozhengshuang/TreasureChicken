@@ -87,6 +87,7 @@ type GateUser struct {
 	fbitemmap     map[int32]int32
 	deliverystate bool   // 发货状态
     roomid        int64
+    gameflag      bool
 }
 
 func NewGateUser(account, key, token string) *GateUser {
@@ -100,6 +101,7 @@ func NewGateUser(account, key, token string) *GateUser {
 	u.savedone = false
 	u.token = token
     u.roomid = 0
+    u.gameflag = false
 	return u
 }
 
@@ -607,6 +609,7 @@ func (this *GateUser) DeliveryState() bool {
 }
 
 func (this *GateUser) RemoveCoinsOk (removeok bool, cost int32, uid int32){
+    this.gameflag = false
     if removeok == false {
         return
     }
@@ -616,6 +619,7 @@ func (this *GateUser) RemoveCoinsOk (removeok bool, cost int32, uid int32){
     }else{
         gtype = 0
     }
-    RoomSvrMgr().JoinGameOk(this, gtype)    
+    RoomSvrMgr().JoinGameOk(this, gtype) 
+    this.QueryPlatformCoins()   
 }
 

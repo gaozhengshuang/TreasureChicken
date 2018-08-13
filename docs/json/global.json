@@ -23,13 +23,13 @@
     ],
 
     "gametype":[
-        100,1000,3000
+        100,1000
     ],
     "gamewaittime":10,
-    "gamemaxmember":50,
-    "gameroundtime":7,
+    "gamemaxmember":30,
+    "gameroundtime":9,
     "gameroundcount":5,
-    "gamerobotnum":30,
+    "gamerobotnum":29,
     "gamerewardper":10,
 
     "//":"断开连接多久清理玩家,毫秒",
@@ -42,7 +42,7 @@
 
     "//":"新玩家初始数据，元宝，金卷",
     "newuser": {
-        "yuanbao": 100000,
+        "yuanbao": 0,
         "coupon": 0 
     },
 
@@ -68,12 +68,7 @@
     "RechargeCallback":"http://210.73.214.67:19000",
 
     "//":"红包对接",
-    "HongBaoAPI": {
-        "secret2":"topjump",
-        "key2":"topjump",
-        "getaddress2":"http://open.std.tvmopt.com/public/user/GetDeliveryAddresses",
-        "recharge2":"http://open.std.tvmopt.com/public/finance/MultiRecharge",
-
+    "HongBaoAPITest": {
         "secret":"cec2795b1ce550ca63a27d3f1d61c91291d9bee2f5c1b1346dba011cae266607",
         "key":"tope7b61803d1091f9b5e0bdcf2f486e",
         "getaddress":"https://open.yx.tvyouxuan.com/public/user/GetDeliveryAddresses",
@@ -90,6 +85,26 @@
         "IncrDiamonds":"https://open.yx.tvyouxuan.com/public/finance/IncrDiamonds",
         "CheckWechatBound":"https://open.yx.tvyouxuan.com/public/user/CheckWechatBound",
         "IncrGolds":"https://open.yx.tvyouxuan.com/public/finance/IncrCoins"
+    },
+
+    "//":"红包对接测试线",
+    "HongBaoAPI": {
+        "secret":"tophbdt",
+        "key":"tophbdt",
+        "getaddress":"http://open.std.tvmopt.com/public/user/GetDeliveryAddresses",
+        "recharge":"http://open.std.tvmopt.com/public/finance/MultiRecharge",
+        "CharacterCreation":"http://open.std.tvmopt.com/public/event/CharacterCreation",
+        "Online":"http://open.std.tvmopt.com/public/event/Online",
+        "Battles":"http://open.std.tvmopt.com/public/event/Battles",
+        "CharacterLevel":"http://open.std.tvmopt.com/public/event/CharacterLevel",
+        "ConsumeMoney":"http://open.std.tvmopt.com/public/event/ConsumeMoney",
+        "LootMoney":"http://open.std.tvmopt.com/public/event/LootMoney",
+        "Victory":"http://open.std.tvmopt.com/public/event/Victory",
+        "FinanceQuery":"http://open.std.tvmopt.com/public/finance/Query",
+        "DecrCoins":"http://open.std.tvmopt.com/public/finance/DecrCoins",
+        "IncrDiamonds":"http://open.std.tvmopt.com/public/finance/IncrDiamonds",
+        "CheckWechatBound":"http://open.std.tvmopt.com/public/user/CheckWechatBound",
+        "IncrGolds":"https://open.std.tvyouxuan.com/public/finance/IncrCoins"            
     },
 
     "//":"内网标记",

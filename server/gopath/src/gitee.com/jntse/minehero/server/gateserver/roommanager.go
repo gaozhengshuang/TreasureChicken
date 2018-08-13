@@ -318,6 +318,7 @@ func (this *RoomAgent) GiveReward(){
         }
         user := UserMgr().FindById(uint64(k))
         if user != nil {
+            user.roomid = 0
             event := NewAddPlatformCoinsEvent(int32(reward), "红包答题增加金币", user.AddPlatformCoins)
             user.AsynEventInsert(event)
         }
@@ -406,7 +407,7 @@ func (this *RoomSvrManager) GetNotFullRoom(gtype int32) *RoomAgent{
 }
 
 func (this *RoomSvrManager) JoinGame(user *GateUser, gtype int32) {
-    if user.roomid != 0 {
+    if user.roomid != 0 || user.gameflag == true {
         return
     }
 
@@ -414,15 +415,17 @@ func (this *RoomSvrManager) JoinGame(user *GateUser, gtype int32) {
         return
     }
 
-    if user.GetYuanbao() < uint32(tbl.Global.Gametype[gtype]) {
-        return
-    }
+    //if user.GetYuanbao() < uint32(tbl.Global.Gametype[gtype]) {
+    //    return
+    //}
 
-    user.RemoveYuanbao(uint32(tbl.Global.Gametype[gtype]), "参加游戏")
-    this.JoinGameOk(user, gtype)
+    //user.RemoveYuanbao(uint32(tbl.Global.Gametype[gtype]), "参加游戏")
+    //this.JoinGameOk(user, gtype)
 
-    //event := NewRemovePlatformCoinsEvent(int32(tbl.Global.Gametype[gtype]), 0, "红包答题扣除金币", user.RemovePlatformCoins, user.RemoveCoinsOk)
-    //user.AsynEventInsert(event)
+    event := NewRemovePlatformCoinsEvent(int32(tbl.Global.Gametype[gtype]), 0, "红包答题扣除金币", user.RemovePlatformCoins, user.RemoveCoinsOk)
+    user.AsynEventInsert(event)
+
+    user.gameflag = true
 }
 
 func (this *RoomSvrManager) JoinGameOk(user *GateUser, gtype int32) {
