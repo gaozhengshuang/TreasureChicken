@@ -29,7 +29,7 @@
     "gamemaxmember":30,
     "gameroundtime":9,
     "gameroundcount":5,
-    "gamerobotnum":29,
+    "gamerobotnum":4,
     "gamerewardper":10,
 
     "//":"断开连接多久清理玩家,毫秒",
@@ -68,9 +68,9 @@
     "RechargeCallback":"http://210.73.214.67:19000",
 
     "//":"红包对接",
-    "HongBaoAPITest": {
+    "HongBaoAPI": {
         "secret":"cec2795b1ce550ca63a27d3f1d61c91291d9bee2f5c1b1346dba011cae266607",
-        "key":"tope7b61803d1091f9b5e0bdcf2f486e",
+        "key":"top5d2132ceb2e730ab625d7b8ed32af",
         "getaddress":"https://open.yx.tvyouxuan.com/public/user/GetDeliveryAddresses",
         "recharge":"https://open.yx.tvyouxuan.com/public/finance/MultiRecharge",
         "CharacterCreation":"https://open.yx.tvyouxuan.com/public/event/CharacterCreation",
@@ -88,7 +88,7 @@
     },
 
     "//":"红包对接测试线",
-    "HongBaoAPI": {
+    "HongBaoAPITest": {
         "secret":"tophbdt",
         "key":"tophbdt",
         "getaddress":"http://open.std.tvmopt.com/public/user/GetDeliveryAddresses",
@@ -104,7 +104,7 @@
         "DecrCoins":"http://open.std.tvmopt.com/public/finance/DecrCoins",
         "IncrDiamonds":"http://open.std.tvmopt.com/public/finance/IncrDiamonds",
         "CheckWechatBound":"http://open.std.tvmopt.com/public/user/CheckWechatBound",
-        "IncrGolds":"https://open.std.tvyouxuan.com/public/finance/IncrCoins"            
+        "IncrGolds":"http://open.std.tvmopt.com/public/finance/IncrCoins"            
     },
 
     "//":"内网标记",

@@ -234,8 +234,8 @@ func (this *RoomAgent) DoingGame(){
             if this.answertime > 0 {
                 for k, v := range this.robottick {
                     if this.answertime == v {
-                        //this.AnswerQuestion(k, this.curanswer)
-                        this.AnswerQuestion(k, util.RandBetween(1,2))
+                        this.AnswerQuestion(k, this.curanswer)
+                        //this.AnswerQuestion(k, util.RandBetween(1,2))
                     }
                 }
                 this.answertime--

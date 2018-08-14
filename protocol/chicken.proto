@@ -4,6 +4,7 @@ package msg;
 message C2GW_JoinGame
 {
     optional int32  type = 1;               //游戏类型 (0 100金币 1 1000金币 2 3000金币)
+    optional string token = 2;
 }
 
 //进入成功
@@ -45,6 +46,7 @@ message GW2C_QuestionInfo
 message C2GW_Answer
 {
     optional int32 answer = 1;     //1是对  2是错
+    optional string token = 2;      
 }
 
 message GW2C_AnswerOk

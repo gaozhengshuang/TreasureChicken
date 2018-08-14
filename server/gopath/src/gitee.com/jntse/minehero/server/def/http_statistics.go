@@ -609,7 +609,7 @@ func HttpRequestDecrCoins(charid uint64, token, tvmid string, count int32, desc 
 	url := tbl.Global.HongBaoAPI.DecrCoins
 	secret := tbl.Global.HongBaoAPI.Secret
 	key := tbl.Global.HongBaoAPI.Key
-	order_id := strconv.FormatInt(int64(charid),10) + "_decrcoins_" + strconv.FormatInt(util.CURTIMEUS(), 10)
+	order_id := strconv.FormatInt(int64(charid),10) + "_deccoin_" + strconv.FormatInt(util.CURTIME(), 10)
 	mapset := make(map[string]interface{})
 	mapset["token"] = token
 	mapset["tvmid"] = tvmid
@@ -732,7 +732,7 @@ func HttpRequestIncrCoins(charid uint64, token, tvmid string, count int32, desc 
 	url := tbl.Global.HongBaoAPI.IncrGolds
 	secret := tbl.Global.HongBaoAPI.Secret
 	key := tbl.Global.HongBaoAPI.Key
-	order_id := strconv.FormatInt(int64(charid),10) + "_incrcoin_" + strconv.FormatInt(util.CURTIMEMS(), 10)
+	order_id := strconv.FormatInt(int64(charid),10) + "_inccoin_" + strconv.FormatInt(util.CURTIME(), 10)
 	mapset := make(map[string]interface{})
 	mapset["token"] = token
 	mapset["tvmid"] = tvmid
