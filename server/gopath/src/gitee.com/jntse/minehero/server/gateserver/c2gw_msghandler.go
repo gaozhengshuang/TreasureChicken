@@ -240,6 +240,7 @@ func on_C2GW_JoinGame(session network.IBaseNetSession, message interface{}) {
         session.Close()
         return
     }
+    user.SetToken(tmsg.GetToken())
     RoomSvrMgr().JoinGame(user, tmsg.GetType())    
 }
 
@@ -251,6 +252,7 @@ func on_C2GW_Answer(session network.IBaseNetSession, message interface{}) {
         session.Close()
         return
     }
+    user.SetToken(tmsg.GetToken())
     RoomSvrMgr().AnswerQuestion(user, tmsg.GetAnswer())
 }
 

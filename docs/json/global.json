@@ -28,8 +28,8 @@
     "gamewaittime":10,
     "gamemaxmember":30,
     "gameroundtime":9,
-    "gameroundcount":5,
-    "gamerobotnum":4,
+    "gameroundcount":3,
+    "gamerobotnum":3,
     "gamerewardper":10,
 
     "//":"断开连接多久清理玩家,毫秒",
@@ -69,7 +69,7 @@
 
     "//":"红包对接",
     "HongBaoAPI": {
-        "secret":"cec2795b1ce550ca63a27d3f1d61c91291d9bee2f5c1b1346dba011cae266607",
+        "secret":"607a26b6c6db239f41e1c2ca301f374cd380be8f2f4d9a4f2a27fc5b71dd5923",
         "key":"top5d2132ceb2e730ab625d7b8ed32af",
         "getaddress":"https://open.yx.tvyouxuan.com/public/user/GetDeliveryAddresses",
         "recharge":"https://open.yx.tvyouxuan.com/public/finance/MultiRecharge",

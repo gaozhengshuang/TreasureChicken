@@ -31,6 +31,7 @@ type RoomAgent struct {
     gametype            int32
     robotmap            map[int32]int32
     cost                int32 
+    robotnum            int32
 }
 
 func NewRoomAgent(id int64, gtype int32) *RoomAgent {
@@ -58,8 +59,9 @@ func NewRoomAgent(id int64, gtype int32) *RoomAgent {
 }
 
 func (this *RoomAgent) InitRobot() {
-    for i := 1; i <= int(tbl.Global.Gamerobotnum); i++ {
-        this.robotmap[int32(i)] = int32(util.CURTIME()) + util.RandBetween(1,8)
+    this.robotnum = util.RandBetween(1,int32(tbl.Global.Gamerobotnum))
+    for i := 1; i <= int(this.robotnum); i++ {
+        this.robotmap[int32(i)] = int32(util.CURTIME()) + util.RandBetween(1,3)
     }
     this.updateflag = false
 }
@@ -276,7 +278,7 @@ func (this *RoomAgent) SendQuestion(round int32){
     }
     this.SendToAllMsg(send)
     log.Info("房间[%d] 当前轮数[%d] 发送题目[%d][%s], 答案:%d", this.Id(), round+1, qconfig.Id, qconfig.Question, qconfig.Answer)
-    for i := 1; i <= int(tbl.Global.Gamerobotnum); i++ {
+    for i := 1; i <= int(this.robotnum); i++ {
         this.AnswerQuestion(int64(i), util.RandBetween(1,2))
         this.robottick[int64(i)] = util.RandBetween(3,7)
     }
@@ -321,6 +323,7 @@ func (this *RoomAgent) GiveReward(){
             user.roomid = 0
             event := NewAddPlatformCoinsEvent(int32(reward), "红包答题增加金币", user.AddPlatformCoins)
             user.AsynEventInsert(event)
+            user.QueryPlatformCoins()
         }
         this.SendMsgById(send, k)
         log.Info("房间[%d] 发放金币奖励[%d]给玩家[%d], ", this.Id(), reward, k)
@@ -392,13 +395,13 @@ func (this *RoomSvrManager) AddNew(id int64, gtype int32) *RoomAgent{
 
 func (this *RoomSvrManager) GetNotFullRoom(gtype int32) *RoomAgent{
     gtype = gtype + 1
-    curid := int64(gtype) * 1000000000 + this.curidmap[gtype]
-    this.curidmap[gtype]++
+    curid := int64(gtype) * 1000000000 + this.curidmap[gtype]    
     room := this.FindRoom(curid)
     if room == nil {
         return this.AddNew(curid, gtype-1)       
     } else {
         if room.IsStart() {
+            this.curidmap[gtype]++
             return this.AddNew(curid+1, gtype-1)
         } else {
             return room
