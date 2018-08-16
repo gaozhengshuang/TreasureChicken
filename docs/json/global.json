@@ -25,7 +25,7 @@
     "gametype":[
         100,1000
     ],
-    "gamewaittime":10,
+    "gamewaittime":20,
     "gamemaxmember":30,
     "gameroundtime":9,
     "gameroundcount":3,
