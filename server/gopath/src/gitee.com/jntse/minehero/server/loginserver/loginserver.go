@@ -200,7 +200,7 @@ func (this *LoginServer) Init(fileconf string) bool {
 	//this.sessions = make(map[int]network.IBaseNetSession)
 	this.login_now = make(map[string]*ClientAccount)
 	this.runtimestamp = 0
-	this.asynev.Start(1,10000)
+	this.asynev.Start(1,1000000)	// 队列不能太小
 
 	return true
 }
