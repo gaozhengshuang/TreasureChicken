@@ -332,7 +332,7 @@ func (this *GateServer) Run() {
 	// TODO:每帧处理1000条
 	now := util.CURTIMEMS()		// 毫秒
 	lastrun := now - this.runtimestamp
-	this.net.Dispatch(network.KFrameDispatchNum)
+	this.net.Dispatch(network.KFrameDispatchNum, 500)
 	tm_dispath := util.CURTIMEMS()
 
 	// 测试日志

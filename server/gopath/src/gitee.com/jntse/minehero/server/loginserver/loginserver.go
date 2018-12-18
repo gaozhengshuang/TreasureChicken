@@ -268,7 +268,7 @@ func (this* LoginServer) Run() {
 	// TODO:每帧处理1000条
 	now := util.CURTIMEMS()
 	lastrun := now - this.runtimestamp
-	this.net.Dispatch(network.KFrameDispatchNum * 2)
+	this.net.Dispatch(network.KFrameDispatchNum * 2, 1000)
 	tm_dispath := util.CURTIMEMS()
 
 	// 测试日志

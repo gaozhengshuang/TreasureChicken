@@ -1,3 +1,3 @@
 [submodule "server/gopath/src/gitee.com/jntse/gotoolkit"]
 	path = server/gopath/src/gitee.com/jntse/gotoolkit
-	url = git@192.168.30.204:xiejian/gotoolkit.git
+	url = git@github.com:gaozhengshuang/gotoolkit.git
