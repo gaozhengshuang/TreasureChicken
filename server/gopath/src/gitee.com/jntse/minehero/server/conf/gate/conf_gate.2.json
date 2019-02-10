@@ -11,7 +11,7 @@
 			"name": "LoginConnector",
 			"parser": "LS2GW_MsgParser",
 			"host": {
-				"ip": "192.168.30.203",
+				"ip": "210.73.214.69",
 				"port": 7010
 			},
             "interval": 3,
@@ -22,7 +22,7 @@
 			"name": "MatchConnector",
 			"parser": "MS2GW_MsgParser",
 			"host": {
-				"ip": "192.168.30.203",
+				"ip": "210.73.214.69",
 				"port": 7110
 			},
             "interval": 3,
@@ -35,7 +35,7 @@
 			"name": "RoomListener",
 			"parser": "RS2GW_MsgParser",
 			"host": {
-				"ip": "192.168.30.203",
+				"ip": "210.73.214.69",
 				"port": 8112
 			},
             "verify": 0,
@@ -47,7 +47,7 @@
 			"name": "ClientListener",
 			"parser": "C2GW_MsgParser",
 			"host": {
-				"ip": "192.168.30.203",
+				"ip": "210.73.214.69",
 				"port": 8012
 			},
             "verify": 1,
@@ -58,8 +58,8 @@
         "passwd": "",
         "db": 0,
         "host": {
-            "ip": "192.168.30.203",
-            "port": 6379
+            "ip": "10.240.0.4",
+            "port": 6400
         }
     }
 }
