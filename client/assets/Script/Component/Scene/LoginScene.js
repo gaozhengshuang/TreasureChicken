@@ -43,6 +43,7 @@ cc.Class({
         Game.UserModel.loginInfo = loginInfo;
         Game.LoginController.ConnectToLoginServer(function () {
             Game.NetWorkController.Send('msg.C2L_ReqLogin', loginInfo);
+            console.log('发送登录消息' + loginInfo);
         }.bind(this));
     },
 

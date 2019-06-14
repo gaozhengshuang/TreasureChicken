@@ -1,4 +1,4 @@
-/*eslint-disable block-scoped-var, no-redeclare, no-control-regex, no-prototype-builtins*/
+/*eslint-disable block-scoped-var, id-length, no-control-regex, no-magic-numbers, no-prototype-builtins, no-redeclare, no-shadow, no-var, sort-vars*/
 "use strict";
 
 var $protobuf = require("protobufjs/minimal");
@@ -7036,6 +7036,7 @@ $root.msg = (function() {
          * @memberof msg
          * @interface IC2GW_JoinGame
          * @property {number|null} [type] C2GW_JoinGame type
+         * @property {string|null} [token] C2GW_JoinGame token
          */
 
         /**
@@ -7060,6 +7061,14 @@ $root.msg = (function() {
          * @instance
          */
         C2GW_JoinGame.prototype.type = 0;
+
+        /**
+         * C2GW_JoinGame token.
+         * @member {string} token
+         * @memberof msg.C2GW_JoinGame
+         * @instance
+         */
+        C2GW_JoinGame.prototype.token = "";
 
         /**
          * Creates a new C2GW_JoinGame instance using the specified properties.
@@ -7087,6 +7096,8 @@ $root.msg = (function() {
                 writer = $Writer.create();
             if (message.type != null && message.hasOwnProperty("type"))
                 writer.uint32(/* id 1, wireType 0 =*/8).int32(message.type);
+            if (message.token != null && message.hasOwnProperty("token"))
+                writer.uint32(/* id 2, wireType 2 =*/18).string(message.token);
             return writer;
         };
 
@@ -7123,6 +7134,9 @@ $root.msg = (function() {
                 switch (tag >>> 3) {
                 case 1:
                     message.type = reader.int32();
+                    break;
+                case 2:
+                    message.token = reader.string();
                     break;
                 default:
                     reader.skipType(tag & 7);
@@ -7162,6 +7176,9 @@ $root.msg = (function() {
             if (message.type != null && message.hasOwnProperty("type"))
                 if (!$util.isInteger(message.type))
                     return "type: integer expected";
+            if (message.token != null && message.hasOwnProperty("token"))
+                if (!$util.isString(message.token))
+                    return "token: string expected";
             return null;
         };
 
@@ -7179,6 +7196,8 @@ $root.msg = (function() {
             var message = new $root.msg.C2GW_JoinGame();
             if (object.type != null)
                 message.type = object.type | 0;
+            if (object.token != null)
+                message.token = String(object.token);
             return message;
         };
 
@@ -7195,10 +7214,14 @@ $root.msg = (function() {
             if (!options)
                 options = {};
             var object = {};
-            if (options.defaults)
+            if (options.defaults) {
                 object.type = 0;
+                object.token = "";
+            }
             if (message.type != null && message.hasOwnProperty("type"))
                 object.type = message.type;
+            if (message.token != null && message.hasOwnProperty("token"))
+                object.token = message.token;
             return object;
         };
 
@@ -8301,6 +8324,7 @@ $root.msg = (function() {
          * @memberof msg
          * @interface IC2GW_Answer
          * @property {number|null} [answer] C2GW_Answer answer
+         * @property {string|null} [token] C2GW_Answer token
          */
 
         /**
@@ -8325,6 +8349,14 @@ $root.msg = (function() {
          * @instance
          */
         C2GW_Answer.prototype.answer = 0;
+
+        /**
+         * C2GW_Answer token.
+         * @member {string} token
+         * @memberof msg.C2GW_Answer
+         * @instance
+         */
+        C2GW_Answer.prototype.token = "";
 
         /**
          * Creates a new C2GW_Answer instance using the specified properties.
@@ -8352,6 +8384,8 @@ $root.msg = (function() {
                 writer = $Writer.create();
             if (message.answer != null && message.hasOwnProperty("answer"))
                 writer.uint32(/* id 1, wireType 0 =*/8).int32(message.answer);
+            if (message.token != null && message.hasOwnProperty("token"))
+                writer.uint32(/* id 2, wireType 2 =*/18).string(message.token);
             return writer;
         };
 
@@ -8388,6 +8422,9 @@ $root.msg = (function() {
                 switch (tag >>> 3) {
                 case 1:
                     message.answer = reader.int32();
+                    break;
+                case 2:
+                    message.token = reader.string();
                     break;
                 default:
                     reader.skipType(tag & 7);
@@ -8427,6 +8464,9 @@ $root.msg = (function() {
             if (message.answer != null && message.hasOwnProperty("answer"))
                 if (!$util.isInteger(message.answer))
                     return "answer: integer expected";
+            if (message.token != null && message.hasOwnProperty("token"))
+                if (!$util.isString(message.token))
+                    return "token: string expected";
             return null;
         };
 
@@ -8444,6 +8484,8 @@ $root.msg = (function() {
             var message = new $root.msg.C2GW_Answer();
             if (object.answer != null)
                 message.answer = object.answer | 0;
+            if (object.token != null)
+                message.token = String(object.token);
             return message;
         };
 
@@ -8460,10 +8502,14 @@ $root.msg = (function() {
             if (!options)
                 options = {};
             var object = {};
-            if (options.defaults)
+            if (options.defaults) {
                 object.answer = 0;
+                object.token = "";
+            }
             if (message.answer != null && message.hasOwnProperty("answer"))
                 object.answer = message.answer;
+            if (message.token != null && message.hasOwnProperty("token"))
+                object.token = message.token;
             return object;
         };
 
@@ -16792,7 +16838,13 @@ $root.msg = (function() {
                 } else
                     object.uid = options.longs === String ? "0" : 0;
                 object.name = "";
-                object.buf = options.bytes === String ? "" : [];
+                if (options.bytes === String)
+                    object.buf = "";
+                else {
+                    object.buf = [];
+                    if (options.bytes !== Array)
+                        object.buf = $util.newBuffer(object.buf);
+                }
             }
             if (message.uid != null && message.hasOwnProperty("uid"))
                 if (typeof message.uid === "number")
@@ -17041,7 +17093,13 @@ $root.msg = (function() {
                 } else
                     object.uid = options.longs === String ? "0" : 0;
                 object.name = "";
-                object.buf = options.bytes === String ? "" : [];
+                if (options.bytes === String)
+                    object.buf = "";
+                else {
+                    object.buf = [];
+                    if (options.bytes !== Array)
+                        object.buf = $util.newBuffer(object.buf);
+                }
             }
             if (message.uid != null && message.hasOwnProperty("uid"))
                 if (typeof message.uid === "number")

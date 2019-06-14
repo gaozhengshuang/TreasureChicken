@@ -43,7 +43,8 @@ module.exports = {
             let cmd = 'pbjs -t static-module -w commonjs -o ' + targetFile + '  ' + sourcePath;
             process.exec(cmd, function (err, stdout, stderr) {
                 if (err) {
-                    Editor.log('++++++ 生成ProtoMsg 错误 ++++++' + err);
+                    Editor.log('++++++ 生成ProtoMsg 错误 ++++++' + stderr + '+++++' + stdout);
+                    Editor.log('++++++ 生成ProtoMsg 错误2 ++++++' + stdout);
                 } else {
                     Editor.log('生成成功');
                 }

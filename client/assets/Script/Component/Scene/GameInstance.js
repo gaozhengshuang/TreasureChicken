@@ -37,6 +37,7 @@ cc.Class({
                 Game.async.timesSeries(this.ctls.length, function (n, tnext) {
                     this.loadingCount++;
                     let ctl = this.ctls[n];
+                    console.log(ctl);
                     if (Game._.isFunction(ctl.Init)) {
                         ctl.Init(function (err) {
                             tnext(err);

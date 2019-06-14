@@ -33,6 +33,7 @@ NetWorkController.prototype.Init = function (cb) {
         }
         this.protoIndexById[index.Id] = index.Name;
         this.protoIndexByName[index.Name] = index.Id;
+        console.log('proto Index' + index.Name + '===' + index.Id);
     }
     Tools.InvokeCallback(cb, null);
 };
@@ -50,7 +51,8 @@ NetWorkController.prototype.Send = function (name, obj, cb) {
     if (this.sock == null || this.sock.readyState != WebSocket.OPEN) {
         return;
     }
-    if (this.protoIndexByName[name] == null) {
+    console.log('send ============================ ');
+    if (this.protoIndexByName[name] == null) {  
         Tools.InvokeCallback(cb, '没找到消息 ' + name);
         return;
     }
