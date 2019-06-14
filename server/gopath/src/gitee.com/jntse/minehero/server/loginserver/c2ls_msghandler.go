@@ -157,6 +157,7 @@ func registAccount(account, passwd, name, face, token string) (errcode string) {
 
 // 请求登陆验证
 func on_C2L_ReqLogin(session network.IBaseNetSession, message interface{}) {
+	log.Info("开始验证登录")
 	tmsg := message.(*msg.C2L_ReqLogin)
 	tm1 := util.CURTIMEUS()
 	errcode, account, name, face, token := "", tmsg.GetAccount(), tmsg.GetNickname(), tmsg.GetFace(), tmsg.GetToken()

@@ -236,8 +236,8 @@ func (this *RoomAgent) DoingGame(){
             if this.answertime > 0 {
                 for k, v := range this.robottick {
                     if this.answertime == v {
-                        this.AnswerQuestion(k, this.curanswer)
-                        //this.AnswerQuestion(k, util.RandBetween(1,2))
+                        //this.AnswerQuestion(k, this.curanswer)
+                        this.AnswerQuestion(k, util.RandBetween(1,2))
                     }
                 }
                 this.answertime--
@@ -422,11 +422,11 @@ func (this *RoomSvrManager) JoinGame(user *GateUser, gtype int32) {
     //    return
     //}
 
-    //user.RemoveYuanbao(uint32(tbl.Global.Gametype[gtype]), "参加游戏")
-    //this.JoinGameOk(user, gtype)
+    user.RemoveYuanbao(uint32(tbl.Global.Gametype[gtype]), "参加游戏")
+    this.JoinGameOk(user, gtype)
 
-    event := NewRemovePlatformCoinsEvent(int32(tbl.Global.Gametype[gtype]), 0, "红包答题扣除金币", user.RemovePlatformCoins, user.RemoveCoinsOk)
-    user.AsynEventInsert(event)
+    //event := NewRemovePlatformCoinsEvent(int32(tbl.Global.Gametype[gtype]), 0, "红包答题扣除金币", user.RemovePlatformCoins, user.RemoveCoinsOk)
+    //user.AsynEventInsert(event)
 
     user.gameflag = true
 }
