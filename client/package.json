@@ -11,7 +11,7 @@
   "dependencies": {
     "async": "^2.6.1",
     "bytebuffer": "^5.0.1",
-    "lodash": "^4.17.10",
+    "lodash": "^4.17.21",
     "moment": "^2.22.1",
     "protobufjs": "^6.8.6",
     "scp2": "^0.5.0",
